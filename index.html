@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Projet Stage Licence Microsoft Afec </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="pokedex-frame">
+    <h1 class="pokedex-title">GESTION LICENCES WINDOWS - AFEC</h1>
+    
+    <div class="pokedex-controls">
+        <div class="dropdown">
+            <button class="dropbtn">▼ TRIER L'INVENTAIRE</button>
+            
+            <div class="pokedex-popup">
+                NOUVEAU ! <br> Gère tes filtres ici
+                <span class="close-popup">×</span>
+            </div>
+
+            <div class="dropdown-content">
+                <a href="#">NOM (A-Z)</a>
+                <a href="#">ANCIENNETÉ (+ au -)</a>
+                <a href="#">VILLE (A-Z)</a>
+                <a href="#">STATUT (COULEUR)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="pokedex-table">
+            <thead>
+                <tr>
+                    <th>SIGNAL</th>
+                    <th class="sortable">INTERVENANT <span>⇅</span></th>
+                    <th class="sortable">EMAIL <span>⇅</span></th>
+                    <th class="sortable">VILLE / AGENCE <span>⇅</span></th>
+                    <th class="sortable">ANCIENNETÉ <span>⇅</span></th>
+                    <th class="sortable">LICENCE <span>⇅</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>ALVES Maria</td>
+                    <td>m.alves@afec.fr</td>
+                    <td>Afec à distance</td>
+                    <td>4 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>BERNARD Jean</td>
+                    <td>j.bernard@afec.fr</td>
+                    <td>Agen</td>
+                    <td>6 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>DURAND Sophie</td>
+                    <td>s.durand@afec.fr</td>
+                    <td>Amiens</td>
+                    <td>12 ANS</td>
+                    <td>WINDOWS 10 HOME</td>
+                </tr>
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>PETIT Lucas</td>
+                    <td>l.petit@afec.fr</td>
+                    <td>Angoulême</td>
+                    <td>1 AN</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>MOREAU Emma</td>
+                    <td>e.moreau@afec.fr</td>
+                    <td>Bayonne</td>
+                    <td>3 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>LEFEBVRE Thomas</td>
+                    <td>t.lefebvre@afec.fr</td>
+                    <td>Beauvais</td>
+                    <td>10 ANS</td>
+                    <td>WINDOWS 10 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>ROUX Julie</td>
+                    <td>j.roux@afec.fr</td>
+                    <td>Bordeaux</td>
+                    <td>5 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>GARCIA Antoine</td>
+                    <td>a.garcia@afec.fr</td>
+                    <td>Cergy</td>
+                    <td>2 ANS</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>BERTRAND Chloe</td>
+                    <td>c.bertrand@afec.fr</td>
+                    <td>Châlons-en-Champagne</td>
+                    <td>7 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>FOURNIER Hugo</td>
+                    <td>h.fournier@afec.fr</td>
+                    <td>Chartres</td>
+                    <td>15 ANS</td>
+                    <td>WINDOWS 7</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>GIRARD Manon</td>
+                    <td>m.girard@afec.fr</td>
+                    <td>Corbeil-Essonnes</td>
+                    <td>4 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>ANDRE Paul</td>
+                    <td>p.andre@afec.fr</td>
+                    <td>Créteil</td>
+                    <td>3 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>MULLER Clara</td>
+                    <td>c.muller@afec.fr</td>
+                    <td>Dax</td>
+                    <td>1 AN</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>LEFEVRE Pierre</td>
+                    <td>p.lefevre@afec.fr</td>
+                    <td>Ecole Jeanne Blum</td>
+                    <td>9 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>MERCIER Sarah</td>
+                    <td>s.mercier@afec.fr</td>
+                    <td>La Rochelle</td>
+                    <td>11 ANS</td>
+                    <td>WINDOWS 10 HOME</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>BONNET Nicolas</td>
+                    <td>n.bonnet@afec.fr</td>
+                    <td>Lille</td>
+                    <td>2 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>VINCENT Lea</td>
+                    <td>l.vincent@afec.fr</td>
+                    <td>Lyon</td>
+                    <td>5 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>LAMBERT Tom</td>
+                    <td>t.lambert@afec.fr</td>
+                    <td>Maisons-Laffitte</td>
+                    <td>0 AN</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>MASSON Ines</td>
+                    <td>i.masson@afec.fr</td>
+                    <td>Montargis</td>
+                    <td>6 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>MATHIEU Leo</td>
+                    <td>l.mathieu@afec.fr</td>
+                    <td>Nanterre</td>
+                    <td>13 ANS</td>
+                    <td>WINDOWS 10 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>GUERIN Camille</td>
+                    <td>c.guerin@afec.fr</td>
+                    <td>Orléans Centre</td>
+                    <td>4 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>BOYER Maxime</td>
+                    <td>m.boyer@afec.fr</td>
+                    <td>Pantin</td>
+                    <td>8 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>PHILIPPE Zoe</td>
+                    <td>z.philippe@afec.fr</td>
+                    <td>Pau</td>
+                    <td>10 ANS</td>
+                    <td>WINDOWS 10 HOME</td>
+                </tr>
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>LECLERC Jules</td>
+                    <td>j.leclerc@afec.fr</td>
+                    <td>Pithiviers</td>
+                    <td>2 ANS</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>GUTIERREZ Ana</td>
+                    <td>a.gutierrez@afec.fr</td>
+                    <td>Vernouillet</td>
+                    <td>5 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
