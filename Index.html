@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Projet Stage Licence Microsoft Afec </title>
+    <link rel="stylesheet" href="Styles.css">
+</head>
+<body>
+
+<div class="pokedex-frame">
+    <h1 class="pokedex-title">GESTION LICENCES WINDOWS - AFEC</h1>
+    
+    <!-- Nouveau bloc de contrôle épuré (Commuté) -->
+    <div class="pokedex-controls">
+        <div class="filter-group">
+            <label for="sort-select" class="filter-label">TRIER PAR :</label>
+            <select id="sort-select" class="pokedex-dropdown">
+                <option value="nom">NOM (A-Z)</option>
+                <option value="anciennete">ANCIENNETÉ (+ au -)</option>
+                <option value="ville">VILLE (A-Z)</option>
+                <option value="statut">STATUT (COULEUR)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="pokedex-table">
+            <thead>
+                <tr>
+                    <th>SIGNAL</th>
+                    <th>ACTIONS Admin</th> 
+                    <th class="sortable">INTERVENANT <span>⇅</span></th>
+                    <th class="sortable">EMAIL <span>⇅</span></th>
+                    <th class="sortable">VILLE / AGENCE <span>⇅</span></th>
+                    <th class="sortable">ANCIENNETÉ <span>⇅</span></th>
+                    <th class="sortable">LICENCE <span>⇅</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ligne exemple : ALVES Maria -->
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>ALVES Maria</td>
+                    <td>m.alves@afec.fr</td>
+                    <td>Afec à distance</td>
+                    <td>4 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <!-- Ligne exemple : BERNARD Jean -->
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>BERNARD Jean</td>
+                    <td>j.bernard@afec.fr</td>
+                    <td>Agen</td>
+                    <td>6 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <!-- Ligne exemple : DURAND Sophie -->
+                <tr class="row-yellow">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>DURAND Sophie</td>
+                    <td>s.durand@afec.fr</td>
+                    <td>Amiens</td>
+                    <td>12 ANS</td>
+                    <td>WINDOWS 10 HOME</td>
+                </tr>
+                <!-- Ligne exemple : PETIT Lucas -->
+                <tr class="row-red">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox"> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>PETIT Lucas</td>
+                    <td>l.petit@afec.fr</td>
+                    <td>Angoulême</td>
+                    <td>1 AN</td>
+                    <td>NON OBTENUE</td>
+                </tr>
+                <!-- Ligne exemple : MOREAU Emma -->
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>MOREAU Emma</td>
+                    <td>e.moreau@afec.fr</td>
+                    <td>Bayonne</td>
+                    <td>3 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+                <!-- Ligne exemple : GUTIERREZ Ana -->
+                <tr class="row-green">
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked> <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>GUTIERREZ Ana</td>
+                    <td>a.gutierrez@afec.fr</td>
+                    <td>Vernouillet</td>
+                    <td>5 ANS</td>
+                    <td>WINDOWS 11 PRO</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Ton script JavaScript est maintenant bien connecté ici ! -->
+<script src="app.js"></script>
+
+</body>
+</html>
