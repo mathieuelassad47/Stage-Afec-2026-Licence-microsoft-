@@ -1,95 +1,108 @@
-require('dotenv').config();
-const express = require('express');
-const msal = require('@azure/msal-node');
-const axios = require('axios');
-const mysql = require('mysql2');
-const path = require('path'); 
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.getElementById('user-table-body');
+    const sortSelect = document.getElementById('sort-select');
+    const headers = document.querySelectorAll('.sortable');
 
-const app = express();
-const port = 3000;
+    // --- 1. MISE À JOUR DES STATS ---
+    const updateStats = () => {
+        const countGreen = document.querySelectorAll('.row-green').length;
+        const countYellow = document.querySelectorAll('.row-yellow').length;
+        const countRed = document.querySelectorAll('.row-red').length;
 
-app.use(express.static('public')); 
+        if(document.getElementById('count-green')) document.getElementById('count-green').innerText = countGreen;
+        if(document.getElementById('count-yellow')) document.getElementById('count-yellow').innerText = countYellow;
+        if(document.getElementById('count-red')) document.getElementById('count-red').innerText = countRed;
+    };
 
-// --- 1. CONFIGURATION SQL ---
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '', 
-    database: 'afec_licences'
-});
-
-// --- 2. LOGIQUE D'AUTOMATISATION (Ton "Cerveau" de vendredi) ---
-const VERSION_SUPPORT_MINIMALE = 2602; 
-
-function calculerStatutAutomatique(userGraph) {
-    const DATE_AUJOURDHUI = new Date();
-    // On récupère la date d'activité ou on met une date par défaut si vide
-    const derniereActivite = userGraph.lastSignInDateTime ? new Date(userGraph.lastSignInDateTime) : new Date('2024-01-01');
-    
-    const joursInactifs = (DATE_AUJOURDHUI - derniereActivite) / (1000 * 60 * 60 * 24);
-    
-    // Note : Pour le build, Microsoft Graph le renvoie souvent dans l'objet 'deviceDetail'
-    // Ici on simule une valeur si elle n'existe pas dans ton tenant de test
-    const buildVersion = userGraph.officeBuild || 2500; 
-
-    // RÈGLE ROUGE : Sécurité
-    if (buildVersion < VERSION_SUPPORT_MINIMALE) {
-        return { code: "ROUGE", label: "Danger : Version obsolète" };
-    }
-    // RÈGLE ORANGE : Recyclage
-    if (joursInactifs > 30) {
-        return { code: "ORANGE", label: `Recyclable : ${Math.floor(joursInactifs)} jours d'inactivité` };
-    }
-    // RÈGLE VERTE : OK
-    return { code: "VERT", label: "Licence optimisée" };
-}
-
-// --- 3. CONFIGURATION MICROSOFT ---
-const msalConfig = {
-    auth: {
-        clientId: process.env.CLIENT_ID,
-        authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`,
-        clientSecret: process.env.CLIENT_SECRET,
-    }
-};
-const cca = new msal.ConfidentialClientApplication(msalConfig);
-
-// --- 4. LES ROUTES ---
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.get('/api/users', async (req, res) => {
-    try {
-        const tokenRequest = { scopes: ['https://graph.microsoft.com/.default'] };
-        const authResponse = await cca.acquireTokenByClientCredential(tokenRequest);
+    // --- 2. FONCTION DE TRI UNIVERSELLE ---
+    function executerTri(critere) {
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
         
-        // On demande plus de détails à Microsoft (signInActivity pour les dates de connexion)
-        const graphResponse = await axios.get('https://graph.microsoft.com/v1.0/users?$select=displayName,mail,id,signInActivity', {
-            headers: { Authorization: `Bearer ${authResponse.accessToken}` }
+        rows.sort((a, b) => {
+            let aCol, bCol;
+            switch(critere) {
+                case 'nom': aCol = a.cells[2]; bCol = b.cells[2]; break;
+                case 'ville': aCol = a.cells[4]; bCol = b.cells[4]; break;
+                case 'anciennete': aCol = a.cells[5]; bCol = b.cells[5]; break;
+                case 'licence': aCol = a.cells[6]; bCol = b.cells[6]; break;
+                case 'statut': 
+                    const p = { 'row-red': 1, 'row-yellow': 2, 'row-green': 3 };
+                    // On compare les noms de classe pour le tri par signal
+                    const classA = a.className.split(' ').find(c => c.startsWith('row-'));
+                    const classB = b.className.split(' ').find(c => c.startsWith('row-'));
+                    return p[classA] - p[classB];
+                default: return 0;
+            }
+
+            let valA = aCol ? aCol.innerText.toLowerCase() : "";
+            let valB = bCol ? bCol.innerText.toLowerCase() : "";
+
+            if (critere === 'anciennete') {
+                return parseInt(valB) - parseInt(valA); // Tri numérique décroissant
+            }
+            return valA.localeCompare(valB); // Tri alphabétique
         });
 
-        // --- FUSION : On applique ton calcul à chaque utilisateur reçu ---
-        const utilisateursTransformes = graphResponse.data.value.map(user => {
-            const analyse = calculerStatutAutomatique(user);
-            return {
-                nom: user.displayName,
-                email: user.mail,
-                statut: analyse.code,
-                message: analyse.label,
-                details: user.signInActivity || "Donnée indisponible"
-            };
-        });
-
-        res.json(utilisateursTransformes);
-
-    } catch (error) {
-        console.error("Erreur Microsoft :", error.message);
-        res.status(500).json({ error: "Erreur de connexion Microsoft" });
+        // Mise à jour du DOM
+        tableBody.innerHTML = "";
+        rows.forEach(row => tableBody.appendChild(row));
     }
-});
 
-app.listen(port, () => {
-    console.log(`🚀 SYSTÈME AFEC AUTOMATISÉ : http://localhost:${port}`);
+    // --- 3. CHARGEMENT DES DONNÉES DEPUIS LE SERVEUR ---
+    async function chargerUtilisateurs() {
+        try {
+            const response = await fetch('/api/users');
+            const utilisateurs = await response.json();
+            
+            tableBody.innerHTML = ""; // On vide les exemples statiques
+
+            utilisateurs.forEach(user => {
+                const row = document.createElement('tr');
+                // On applique la classe row-vert/orange/rouge reçue du serveur
+                row.className = `row-${user.statut.toLowerCase()}`; 
+                
+                row.innerHTML = `
+                    <td><span class="dot"></span></td>
+                    <td>
+                        <label class="switch-admin">
+                            <input type="checkbox" checked>
+                            <span class="slider-retro round"></span>
+                        </label>
+                    </td>
+                    <td>${user.nom}</td>
+                    <td>${user.email}</td>
+                    <td>AFEC France</td>
+                    <td>À calculer</td>
+                    <td>${user.message}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            updateStats(); // Mise à jour des bulles de stats après chargement
+            
+        } catch (err) {
+            console.error("Impossible de charger les données Microsoft", err);
+        }
+    }
+
+    // --- 4. ÉVÉNEMENTS (TRI) ---
+
+    // Menu déroulant
+    if(sortSelect) {
+        sortSelect.addEventListener('change', (e) => executerTri(e.target.value));
+    }
+
+    // Clic sur les titres de colonnes
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const critere = header.getAttribute('data-critere');
+            if (critere) {
+                executerTri(critere);
+                if(sortSelect) sortSelect.value = critere; // Synchronise le menu
+            }
+        });
+    });
+
+    // --- Lancement initial ---
+    chargerUtilisateurs();
 });

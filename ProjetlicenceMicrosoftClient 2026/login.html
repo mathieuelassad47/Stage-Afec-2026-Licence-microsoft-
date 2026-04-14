@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+    <title>Connexion - AFEC Microsoft Management</title>
+</head>
+<body>
+    <div class="fb-container">
+        <div class="fb-text">
+            <h1 class="fb-logo">AFEC Microsoft</h1>
+            <p>Gérez vos licences Windows et surveillez la conformité de votre parc informatique en temps réel.</p>
+        </div>
+
+        <div class="fb-login-box">
+            <div class="login-card">
+                <div class="user-avatar">👤</div>
+                <h3>ADMIN CONNEXION</h3>
+                <input type="email" id="email" placeholder="Adresse e-mail admin" class="login-input">
+                <input type="password" id="password" placeholder="Mot de passe" class="login-input">
+                
+                <button onclick="authentifier()" class="login-btn">Se connecter</button>
+                
+                <div class="fb-divider"></div>
+                
+                <p style="font-size: 12px; color: var(--text-light); text-align: center;">
+                    Réservé au service informatique de l'AFEC.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup-alerte" class="pokedex-overlay" style="display:none;">
+        <div class="imessage-alert">
+            <div class="alert-content">
+                <h3>Accès Refusé</h3>
+                <p id="message-erreur"></p>
+            </div>
+            <button onclick="location.reload()" class="alert-button">Réessayer</button>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>
