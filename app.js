@@ -1,9 +1,93 @@
+/* ==========================================================
+   1. LOGIQUE D'AUTHENTIFICATION & SIMULATION MAIL
+   ========================================================== */
+
+async function authentifier() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    // Test des identifiants (Admin AFEC + Ton accès perso)
+    const isAdmin = (email === "admin@afec.fr" && password === "Afec2026!");
+    const isMatt = (email === "mattdizair@gmail.com" && password === "@Mathieu47");
+
+    if (isAdmin || isMatt) {
+        // Déclenchement du flux de chargement
+        document.getElementById('loading-email').innerText = email;
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('loading-screen').style.display = 'flex';
+
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            console.log("Connexion réussie pour : " + email);
+        }, 2000);
+    } else {
+        // Affichage du popup iMessage en cas d'erreur
+        const popup = document.getElementById('popup-alerte');
+        const message = document.getElementById('message-erreur');
+        if (popup && message) {
+            message.innerText = "Identifiants incorrects. Veuillez réessayer.";
+            popup.style.display = 'flex';
+        } else {
+            alert("Identifiants incorrects.");
+        }
+    }
+}
+
+// Fonction pour simuler l'envoi du lien par mail
+function demanderLienAcces() {
+    const email = document.getElementById('email').value;
+    
+    if (!email || !email.includes('@')) {
+        alert("Veuillez saisir une adresse mail valide d'abord.");
+        return;
+    }
+
+    // Affichage de la notification verte dans la carte
+    const card = document.querySelector('.login-card');
+    const existingNotif = document.querySelector('.mail-sent-notif');
+    if (existingNotif) existingNotif.remove(); // Évite les doublons
+
+    const notif = document.createElement('div');
+    notif.className = 'mail-sent-notif';
+    notif.innerText = "Lien de connexion envoyé à " + email;
+    card.prepend(notif);
+
+    console.log("Simulation : Mail envoyé à " + email);
+
+    // Simulation du clic sur le mail après 3 secondes
+    setTimeout(() => {
+        alert("Simulation : Vous avez cliqué sur le lien reçu par mail !");
+        authentifierViaLien(email);
+    }, 3000);
+}
+
+function authentifierViaLien(email) {
+    document.getElementById('loading-email').innerText = email;
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('loading-screen').style.display = 'flex';
+
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'block';
+    }, 1500);
+}
+
+// Fonction pour fermer le popup d'erreur
+function fermerAlerte() {
+    const popup = document.getElementById('popup-alerte');
+    if (popup) popup.style.display = 'none';
+}
+
+/* ==========================================================
+   2. LOGIQUE DU DASHBOARD (TRI, STATS, DONNÉES)
+   ========================================================== */
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('user-table-body');
     const sortSelect = document.getElementById('sort-select');
     const headers = document.querySelectorAll('.sortable');
 
-    // --- 1. MISE À JOUR DES STATS ---
+    // --- A. MISE À JOUR DES STATS ---
     const updateStats = () => {
         const countGreen = document.querySelectorAll('.row-green').length;
         const countYellow = document.querySelectorAll('.row-yellow').length;
@@ -14,8 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(document.getElementById('count-red')) document.getElementById('count-red').innerText = countRed;
     };
 
-    // --- 2. FONCTION DE TRI UNIVERSELLE ---
+    // --- B. FONCTION DE TRI ---
     function executerTri(critere) {
+        if (!tableBody) return;
         const rows = Array.from(tableBody.querySelectorAll('tr'));
         
         rows.sort((a, b) => {
@@ -27,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'licence': aCol = a.cells[6]; bCol = b.cells[6]; break;
                 case 'statut': 
                     const p = { 'row-red': 1, 'row-yellow': 2, 'row-green': 3 };
-                    // On compare les noms de classe pour le tri par signal
                     const classA = a.className.split(' ').find(c => c.startsWith('row-'));
                     const classB = b.className.split(' ').find(c => c.startsWith('row-'));
                     return p[classA] - p[classB];
@@ -38,71 +122,61 @@ document.addEventListener('DOMContentLoaded', () => {
             let valB = bCol ? bCol.innerText.toLowerCase() : "";
 
             if (critere === 'anciennete') {
-                return parseInt(valB) - parseInt(valA); // Tri numérique décroissant
+                return parseInt(valB) - parseInt(valA); 
             }
-            return valA.localeCompare(valB); // Tri alphabétique
+            return valA.localeCompare(valB);
         });
 
-        // Mise à jour du DOM
         tableBody.innerHTML = "";
         rows.forEach(row => tableBody.appendChild(row));
     }
 
-    // --- 3. CHARGEMENT DES DONNÉES DEPUIS LE SERVEUR ---
+    // --- C. CHARGEMENT DES DONNÉES ---
     async function chargerUtilisateurs() {
+        if (!tableBody) return;
         try {
             const response = await fetch('/api/users');
-            const utilisateurs = await response.json();
+            if (!response.ok) throw new Error("Erreur réseau");
             
-            tableBody.innerHTML = ""; // On vide les exemples statiques
+            const utilisateurs = await response.json();
+            tableBody.innerHTML = ""; 
 
             utilisateurs.forEach(user => {
                 const row = document.createElement('tr');
-                // On applique la classe row-vert/orange/rouge reçue du serveur
                 row.className = `row-${user.statut.toLowerCase()}`; 
                 
                 row.innerHTML = `
                     <td><span class="dot"></span></td>
-                    <td>
-                        <label class="switch-admin">
-                            <input type="checkbox" checked>
-                            <span class="slider-retro round"></span>
-                        </label>
-                    </td>
+                    <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
                     <td>${user.nom}</td>
                     <td>${user.email}</td>
                     <td>AFEC France</td>
-                    <td>À calculer</td>
-                    <td>${user.message}</td>
+                    <td>${user.anciennete || "N/A"}</td>
+                    <td>${user.message || "WINDOWS 11 PRO"}</td>
                 `;
                 tableBody.appendChild(row);
             });
-            
-            updateStats(); // Mise à jour des bulles de stats après chargement
-            
+            updateStats();
         } catch (err) {
-            console.error("Impossible de charger les données Microsoft", err);
+            console.warn("Mode démo : Utilisation des données locales.");
+            updateStats();
         }
     }
 
-    // --- 4. ÉVÉNEMENTS (TRI) ---
-
-    // Menu déroulant
+    // --- D. ÉVÉNEMENTS ---
     if(sortSelect) {
         sortSelect.addEventListener('change', (e) => executerTri(e.target.value));
     }
 
-    // Clic sur les titres de colonnes
     headers.forEach(header => {
         header.addEventListener('click', () => {
             const critere = header.getAttribute('data-critere');
             if (critere) {
                 executerTri(critere);
-                if(sortSelect) sortSelect.value = critere; // Synchronise le menu
+                if(sortSelect) sortSelect.value = critere;
             }
         });
     });
 
-    // --- Lancement initial ---
     chargerUtilisateurs();
 });

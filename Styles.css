@@ -1,6 +1,6 @@
 /* ==========================================================
    VARIABLES DARK MODERN
-   ========================================================== */
+   ========================================================= */
 :root {
     --bg-color: #0f172a;
     --card-bg: #1e293b;
@@ -19,33 +19,121 @@ body {
     font-family: 'Inter', system-ui, sans-serif;
     color: var(--text-main);
     margin: 0;
-    padding: 20px;
+    padding: 0; 
+    overflow-x: hidden;
 }
 
 /* ==========================================================
-   SYSTÈME DE CONNEXION (LOGIN OVERLAY)
+   ÉCRAN DE CHARGEMENT (LOADER TRANSITION)
    ========================================================== */
-.login-backdrop {
+#loading-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: var(--bg-color);
-    z-index: 2000;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 5000;
+    text-align: center;
 }
 
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-content p {
+    font-size: 18px;
+    color: var(--text-main);
+}
+
+/* ==========================================================
+   LAYOUT FUSIONNÉ (STYLE FACEBOOK)
+   ========================================================== */
+.fb-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.fb-text {
+    flex: 1;
+    max-width: 500px;
+}
+
+.fb-logo {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.05em;
+}
+
+.fb-text p {
+    font-size: 24px;
+    color: var(--text-main);
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+.fb-login-box {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.fb-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 20px 0;
+}
+
+/* On s'assure que le dashboard est bien caché au départ */
+#dashboard-section {
+    display: none;
+}
+
+/* ==========================================================
+   SYSTÈME DE CONNEXION (CARTE ET INPUTS)
+   ========================================================== */
 .login-card {
     background: var(--card-bg);
     padding: 40px;
     border-radius: 30px;
     border: 1px solid var(--border-color);
     text-align: center;
-    width: 320px;
+    width: 350px;
     box-shadow: var(--shadow);
+}
+
+/* Notification d'envoi de mail (Ajouté) */
+.mail-sent-notif {
+    background: rgba(48, 209, 88, 0.2);
+    color: #30d158;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    border: 1px solid #30d158;
+    animation: bounce 0.4s ease;
 }
 
 .user-avatar {
@@ -55,26 +143,34 @@ body {
 
 .login-input {
     width: 100%;
-    padding: 12px;
-    margin: 20px 0;
+    padding: 14px;
+    margin: 10px 0;
     background: #0f172a;
     border: 1px solid var(--border-color);
     border-radius: 10px;
     color: white;
-    text-align: center;
+    font-size: 16px;
     box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 .login-btn {
     background: var(--primary-color);
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 14px;
     border-radius: 10px;
     font-weight: bold;
+    font-size: 16px;
     cursor: pointer;
     width: 100%;
     transition: 0.3s;
+    margin-top: 10px;
 }
 
 .login-btn:hover {
@@ -99,13 +195,14 @@ body {
 }
 
 .imessage-alert {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
     width: 270px;
     border-radius: 15px;
     text-align: center;
     overflow: hidden;
     animation: bounce 0.4s ease;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 .alert-content {
@@ -116,12 +213,6 @@ body {
 .alert-content h3 {
     margin: 0 0 10px 0;
     font-size: 18px;
-}
-
-.alert-content p {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.4;
 }
 
 .alert-button {
@@ -136,12 +227,8 @@ body {
     cursor: pointer;
 }
 
-.alert-button:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
 /* ==========================================================
-   STRUCTURE PRINCIPALE - DASHBOARD
+   STRUCTURE DASHBOARD (iMESSAGE/POKEDEX)
    ========================================================== */
 .pokedex-frame {
     background: var(--card-bg);
@@ -149,23 +236,21 @@ body {
     border-radius: 20px;
     padding: 30px;
     max-width: 1150px;
-    margin: 20px auto;
+    margin: 40px auto;
     box-shadow: var(--shadow);
     position: relative;
 }
 
 .pokedex-title {
     color: var(--text-main);
-    text-align: left;
     font-size: 1.75rem;
     font-weight: 800;
     margin-bottom: 25px;
-    letter-spacing: -0.025em;
     border-left: 5px solid var(--primary-color);
     padding-left: 15px;
 }
 
-/* DASHBOARD STATS - GLOSSY */
+/* STATS GLOSSY */
 .dashboard-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -179,26 +264,13 @@ body {
     border-radius: 25px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
-    overflow: hidden;
-    transition: transform 0.3s ease;
     background: linear-gradient(to bottom, 
         rgba(255,255,255,0.2) 0%, 
         rgba(255,255,255,0.05) 50%, 
         rgba(0,0,0,0.05) 51%, 
         rgba(0,0,0,0.15) 100%);
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.stat-card::before {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 5%;
-    width: 90%;
-    height: 40%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 100%);
-    border-radius: 20px 20px 100px 100px;
-    pointer-events: none;
+    transition: transform 0.3s ease;
 }
 
 .stat-card:nth-child(1) { background-color: var(--success); }
@@ -207,43 +279,13 @@ body {
 .stat-card:hover { transform: translateY(-5px); }
 
 .stat-value {
-    position: relative;
     font-size: 2.5rem;
     font-weight: 800;
-    margin: 10px 0;
     color: white;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-.stat-label {
-    position: relative;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-/* ==========================================================
-   CONTRÔLES ET TABLEAU
-   ========================================================== */
-.pokedex-controls {
-    display: flex;
-    justify-content: flex-start;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 20px;
-}
-
-.pokedex-dropdown {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    padding: 10px 15px;
-    font-size: 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
-}
-
+/* TABLEAU ET BULLES */
 .table-container {
     background-color: var(--bg-color);
     border-radius: 12px;
@@ -256,64 +298,17 @@ body {
     border-spacing: 0 8px; 
 }
 
-.sortable {
-    color: var(--text-light);
-    padding: 10px 14px;
-    text-align: left;
-    text-transform: uppercase;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.sortable:hover {
-    color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* BULLES iMESSAGE (LIGNES) */
-.row-green, .row-yellow, .row-red {
-    border-radius: 15px;
-    transition: transform 0.2s ease;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
 .pokedex-table td {
     padding: 16px;
     color: white !important;
     font-weight: 600;
-    font-size: 14px;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
 }
-
-.pokedex-table tr td:first-child { border-radius: 15px 0 0 15px; }
-.pokedex-table tr td:last-child { border-radius: 0 15px 15px 0; }
 
 .row-green { background: linear-gradient(to bottom, #30d158 0%, #24b045 100%) !important; }
 .row-yellow { background: linear-gradient(to bottom, #ffcc00 0%, #e6b800 100%) !important; }
 .row-red { background: linear-gradient(to bottom, #ff453a 0%, #d63027 100%) !important; }
 
-/* ANIMATIONS */
-.dot {
-    height: 8px; width: 8px;
-    background-color: white !important;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 4px;
-    animation: typing 1.4s infinite;
-}
-
-@keyframes typing {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-}
-
-@keyframes bounce {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* SWITCH STYLE iOS */
+/* SWITCH iOS */
 .switch-admin { width: 36px; height: 20px; position: relative; display: inline-block; }
 .switch-admin input { opacity: 0; width: 0; height: 0; }
 .slider-retro {
@@ -331,3 +326,35 @@ body {
 }
 input:checked + .slider-retro { background-color: #007aff; }
 input:checked + .slider-retro:before { transform: translateX(16px); }
+
+/* ANIMATIONS */
+@keyframes typing {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes bounce {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.dot {
+    height: 8px; width: 8px;
+    background-color: white !important;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    animation: typing 1.4s infinite;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .fb-container {
+        flex-direction: column;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .fb-login-box {
+        justify-content: center;
+    }
+}
