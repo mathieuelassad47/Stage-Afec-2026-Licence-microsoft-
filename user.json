@@ -1,0 +1,82 @@
+[[
+  {
+    "nom": "BELLOUARD Laurent",
+    "email": "laurent.bellouard@afec.fr",
+    "statut": "Green",
+    "anciennete": "4",
+    "ville": "Nantes",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "VERRECCHIA Josette",
+    "email": "josette.verrecchia@afec.fr",
+    "statut": "Green",
+    "anciennete": "5",
+    "ville": "Saint Nazaire",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "DUMAS Marie Eve",
+    "email": "marie-eve.dumas@afec.fr",
+    "statut": "Green",
+    "anciennete": "6",
+    "ville": "Valence",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "BOYER Nicole",
+    "email": "nicole.boyer@afec.fr",
+    "statut": "Yellow",
+    "anciennete": "8",
+    "ville": "Angoulême",
+    "licence": "WINDOWS 10 HOME"
+  },
+  {
+    "nom": "LAVARDA Nathalie",
+    "email": "nathalie.lavarda@afec.fr",
+    "statut": "Green",
+    "anciennete": "5",
+    "ville": "Arcachon",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "DOUAH Fatima",
+    "email": "fatima.douah@afec.fr",
+    "statut": "Red",
+    "anciennete": "1",
+    "ville": "Montpellier",
+    "licence": "NON OBTENUE"
+  },
+  {
+    "nom": "MAIGNAN Helene",
+    "email": "helene.maignan@afec.fr",
+    "statut": "Green",
+    "anciennete": "6",
+    "ville": "Nantes",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "KERHERVE Solenn",
+    "email": "solenn.kerherve@afec.fr",
+    "statut": "Green",
+    "anciennete": "4",
+    "ville": "Bayonne",
+    "licence": "WINDOWS 11 PRO"
+  },
+  {
+    "nom": "SZUBA Magdalena",
+    "email": "magdalena.szuba@afec.fr",
+    "statut": "Yellow",
+    "anciennete": "3",
+    "ville": "Cergy",
+    "licence": "WINDOWS 10 PRO"
+  },
+  {
+    "nom": "RONIA Veronique",
+    "email": "veronique.ronia@afec.fr",
+    "statut": "Green",
+    "anciennete": "5",
+    "ville": "Cergy",
+    "licence": "WINDOWS 11 PRO"
+  }
+]]

@@ -6,11 +6,12 @@ async function authentifier() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // Test des identifiants (Admin AFEC + Ton accès perso)
+    // Test des identifiants (Admin AFEC + Ton accès perso + Fatima pour test alerte)
     const isAdmin = (email === "admin@afec.fr" && password === "Afec2026!");
     const isMatt = (email === "mattdizair@gmail.com" && password === "@Mathieu47");
+    const isFatima = (email === "fatima.douah@afec.fr"); // Fatima peut se connecter pour tester l'alerte
 
-    if (isAdmin || isMatt) {
+    if (isAdmin || isMatt || isFatima) {
         // Déclenchement du flux de chargement
         document.getElementById('loading-email').innerText = email;
         document.getElementById('login-section').style.display = 'none';
@@ -20,6 +21,9 @@ async function authentifier() {
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('dashboard-section').style.display = 'block';
             console.log("Connexion réussie pour : " + email);
+            
+            // --- DÉCLENCHEMENT DE L'ALERTE CLIENT (NOUVEAU) ---
+            verifierEcheanceClient();
         }, 2000);
     } else {
         // Affichage du popup iMessage en cas d'erreur
@@ -34,6 +38,27 @@ async function authentifier() {
     }
 }
 
+// Fonction pour simuler la réception d'une alerte côté client (Position Client)
+function verifierEcheanceClient() {
+    const currentUserEmail = document.getElementById('email').value;
+
+    // On simule que l'utilisateur Fatima (en rouge) reçoit l'alerte
+    if (currentUserEmail === "fatima.douah@afec.fr") {
+        setTimeout(() => {
+            const notif = document.getElementById('client-notification');
+            if (notif) {
+                notif.style.display = 'block';
+                console.log("ALERTE CLIENT : La licence de " + currentUserEmail + " expire dans 3 jours !");
+                
+                // Disparition automatique après 8 secondes
+                setTimeout(() => { 
+                    notif.style.display = 'none'; 
+                }, 8000);
+            }
+        }, 1500); // Apparaît peu après l'arrivée sur le dashboard
+    }
+}
+
 // Fonction pour simuler l'envoi du lien par mail
 function demanderLienAcces() {
     const email = document.getElementById('email').value;
@@ -43,10 +68,9 @@ function demanderLienAcces() {
         return;
     }
 
-    // Affichage de la notification verte dans la carte
     const card = document.querySelector('.login-card');
     const existingNotif = document.querySelector('.mail-sent-notif');
-    if (existingNotif) existingNotif.remove(); // Évite les doublons
+    if (existingNotif) existingNotif.remove(); 
 
     const notif = document.createElement('div');
     notif.className = 'mail-sent-notif';
@@ -55,7 +79,6 @@ function demanderLienAcces() {
 
     console.log("Simulation : Mail envoyé à " + email);
 
-    // Simulation du clic sur le mail après 3 secondes
     setTimeout(() => {
         alert("Simulation : Vous avez cliqué sur le lien reçu par mail !");
         authentifierViaLien(email);
@@ -70,10 +93,12 @@ function authentifierViaLien(email) {
     setTimeout(() => {
         document.getElementById('loading-screen').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
+        
+        // On vérifie aussi l'échéance si on passe par le lien mail
+        verifierEcheanceClient();
     }, 1500);
 }
 
-// Fonction pour fermer le popup d'erreur
 function fermerAlerte() {
     const popup = document.getElementById('popup-alerte');
     if (popup) popup.style.display = 'none';
@@ -87,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sort-select');
     const headers = document.querySelectorAll('.sortable');
 
-    // --- A. MISE À JOUR DES STATS ---
     const updateStats = () => {
         const countGreen = document.querySelectorAll('.row-green').length;
         const countYellow = document.querySelectorAll('.row-yellow').length;
@@ -98,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(document.getElementById('count-red')) document.getElementById('count-red').innerText = countRed;
     };
 
-    // --- B. FONCTION DE TRI ---
     function executerTri(critere) {
         if (!tableBody) return;
         const rows = Array.from(tableBody.querySelectorAll('tr'));
@@ -131,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         rows.forEach(row => tableBody.appendChild(row));
     }
 
-    // --- C. CHARGEMENT DES DONNÉES ---
     async function chargerUtilisateurs() {
         if (!tableBody) return;
         try {
@@ -163,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- D. ÉVÉNEMENTS ---
     if(sortSelect) {
         sortSelect.addEventListener('change', (e) => executerTri(e.target.value));
     }

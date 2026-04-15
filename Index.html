@@ -8,6 +8,18 @@
 </head>
 <body>
 
+    <div id="client-notification" class="ios-notification" style="display:none;">
+        <div class="notif-header">
+            <span class="notif-icon">🛡️</span>
+            <span class="notif-title">SYSTÈME AFEC</span>
+            <span class="notif-time">Maintenant</span>
+        </div>
+        <div class="notif-body">
+            <strong>Licence Windows</strong>
+            <p>Attention : Votre licence expire dans 3 jours. Merci de contacter le support informatique.</p>
+        </div>
+    </div>
+
     <section id="login-section" class="fb-container">
         <div class="fb-text">
             <h1 class="fb-logo">AFEC Microsoft</h1>
@@ -53,15 +65,15 @@
 
             <div class="dashboard-stats">
                 <div class="stat-card">
-                    <div class="stat-value" id="count-green">12</div> 
+                    <div class="stat-value" id="count-green">0</div> 
                     <div class="stat-label">CONFORMES</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="count-yellow">2</div> 
+                    <div class="stat-value" id="count-yellow">0</div> 
                     <div class="stat-label">À RECYCLER</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="count-red">1</div> 
+                    <div class="stat-value" id="count-red">0</div> 
                     <div class="stat-label">CRITIQUES</div>
                 </div>
             </div>
@@ -71,9 +83,11 @@
                     <label for="sort-select" class="filter-label">TRIER PAR :</label>
                     <select id="sort-select" class="pokedex-dropdown">
                         <option value="nom">NOM (A-Z)</option>
-                        <option value="anciennete">ANCIENNETÉ (+ au -)</option>
+                        <option value="email">EMAIL (A-Z)</option>
+                        <option value="anciennete">ANCIENNETÉ (RESTANTE)</option>
                         <option value="ville">VILLE (A-Z)</option>
                         <option value="statut">SIGNAL (PRIORITÉ)</option>
+                        <option value="licence">LICENCE (VERSION)</option>
                     </select>
                 </div>
             </div>
@@ -85,104 +99,14 @@
                             <th class="sortable" data-critere="statut">SIGNAL ⇅</th>
                             <th>ACTIONS</th> 
                             <th class="sortable" data-critere="nom">INTERVENANT ⇅</th>
-                            <th>EMAIL</th>
+                            <th class="sortable" data-critere="email">EMAIL ⇅</th>
                             <th class="sortable" data-critere="ville">VILLE ⇅</th>
-                            <th class="sortable" data-critere="anciennete">ANCIENNETÉ ⇅</th>
+                            <th class="sortable" data-critere="anciennete">DURÉE RESTANTE ⇅</th>
                             <th class="sortable" data-critere="licence">LICENCE ⇅</th>
                         </tr>
                     </thead>
                     <tbody id="user-table-body">
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>BELLOUARD Laurent</td>
-                            <td>laurent.bellouard@afec.fr</td>
-                            <td>Nantes</td>
-                            <td>4 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>VERRECCHIA Josette</td>
-                            <td>josette.verrecchia@afec.fr</td>
-                            <td>Saint Nazaire</td>
-                            <td>5 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>DUMAS Marie Eve</td>
-                            <td>marie-eve.dumas@afec.fr</td>
-                            <td>Valence</td>
-                            <td>6 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-yellow">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>BOYER Nicole</td>
-                            <td>nicole.boyer@afec.fr</td>
-                            <td>Angoulême</td>
-                            <td>8 ANS</td>
-                            <td>WINDOWS 10 HOME</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>LAVARDA Nathalie</td>
-                            <td>nathalie.lavarda@afec.fr</td>
-                            <td>Arcachon</td>
-                            <td>5 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-red">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox"><span class="slider-retro round"></span></label></td>
-                            <td>DOUAH Fatima</td>
-                            <td>fatima.douah@afec.fr</td>
-                            <td>Montpellier</td>
-                            <td>1 AN</td>
-                            <td>NON OBTENUE</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>MAIGNAN Helene</td>
-                            <td>helene.maignan@afec.fr</td>
-                            <td>Nantes</td>
-                            <td>6 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>KERHERVE Solenn</td>
-                            <td>solenn.kerherve@afec.fr</td>
-                            <td>Bayonne</td>
-                            <td>4 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                        <tr class="row-yellow">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>SZUBA Magdalena</td>
-                            <td>magdalena.szuba@afec.fr</td>
-                            <td>Cergy</td>
-                            <td>7 ANS</td>
-                            <td>WINDOWS 10 PRO</td>
-                        </tr>
-                        <tr class="row-green">
-                            <td><span class="dot"></span></td>
-                            <td><label class="switch-admin"><input type="checkbox" checked><span class="slider-retro round"></span></label></td>
-                            <td>RONIA Veronique</td>
-                            <td>veronique.ronia@afec.fr</td>
-                            <td>Cergy</td>
-                            <td>5 ANS</td>
-                            <td>WINDOWS 11 PRO</td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -195,6 +119,22 @@
                 <p id="message-erreur"></p>
             </div>
             <button onclick="document.getElementById('popup-alerte').style.display='none'" class="alert-button">Réessayer</button>
+        </div>
+    </div>
+
+    <div id="popup-message" class="pokedex-overlay" style="display:none;">
+        <div class="imessage-alert">
+            <div class="alert-content">
+                <h3 id="msg-destinataire" style="color: var(--primary-color);">Destinataire</h3>
+                <div style="background: #e9e9eb; color: black; padding: 12px; border-radius: 15px; margin: 10px 0; text-align: left; font-size: 14px; line-height: 1.4;">
+                    "Votre licence Windows expire dans 3 jours, merci de contacter le support informatique de l'AFEC."
+                </div>
+                <p style="font-size: 11px; color: gray;">Le message sera envoyé par mail.</p>
+            </div>
+            <div style="display: flex; border-top: 1px solid rgba(0, 0, 0, 0.1);">
+                <button onclick="document.getElementById('popup-message').style.display='none'" class="alert-button" style="color: #ff3b30; border-right: 1px solid rgba(0, 0, 0, 0.1);">Annuler</button>
+                <button onclick="envoyerMessage()" class="alert-button">Envoyer</button>
+            </div>
         </div>
     </div>
 
