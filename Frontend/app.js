@@ -11,7 +11,6 @@ async function authentifier() {
         return;
     }
 
-    // --- ÉTAPE A : VÉRIFICATION PRIORITAIRE (ADMIN MAÎTRE DANS LE CODE) ---
     const masterAdminEmail = "admin@afec.fr";
     const masterAdminPass = "Afec2026!";
 
@@ -21,7 +20,6 @@ async function authentifier() {
         return; 
     }
 
-    // --- ÉTAPE B : VÉRIFICATION MYSQL (AUTRES UTILISATEURS) ---
     try {
         const response = await fetch('/api/login', {
             method: 'POST',
@@ -35,16 +33,14 @@ async function authentifier() {
             console.log("✅ Accès autorisé par MySQL pour : " + email);
             lancerAnimationConnexion(email);
         } else {
-            // ❌ Appel du message personnalisé "Intrus"
             afficherErreurLogin(data.message || "Identifiants invalides.");
         }
     } catch (error) {
         console.error("Erreur de connexion au serveur :", error);
-        afficherErreurLogin("Le serveur ne répond pas. Vérifiez que node server.js est lancé.");
+        afficherErreurLogin("Le serveur ne répond pas. Lancez 'node server.js'.");
     }
 }
 
-// Fonction centrale pour l'animation de succès
 function lancerAnimationConnexion(email) {
     document.getElementById('loading-email').innerText = email;
     document.getElementById('login-section').style.display = 'none';
@@ -53,20 +49,15 @@ function lancerAnimationConnexion(email) {
     setTimeout(() => {
         document.getElementById('loading-screen').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
-        
-        // On charge les données réelles et on vérifie les alertes
         chargerUtilisateurs();
         verifierEcheanceClient();
     }, 2000);
 }
 
-// ✅ FONCTION FUSIONNÉE : Alerte personnalisée pour les intrus
 function afficherErreurLogin(msg) {
     const popup = document.getElementById('popup-alerte');
     const message = document.getElementById('message-erreur');
-    
     if (popup && message) {
-        // Design du message pour l'intrus
         message.innerHTML = `
             <span style="color: #ff3b30; font-weight: bold; font-size: 1.2em;">⚠️ ALERTE INTRUSION</span><br><br>
             Désolé, vous n'êtes pas le bienvenu ici.<br>
@@ -79,9 +70,49 @@ function afficherErreurLogin(msg) {
 }
 
 /* ==========================================================
-   2. LOGIQUE DU DASHBOARD (APPEL API & AFFICHAGE DYNAMIQUE)
+   2. LOGIQUE DU DASHBOARD & SYSTÈMES D'ENVOI (MANUEL & POPUP)
    ========================================================== */
 
+let mailEnCours = ""; 
+
+// A. SYSTÈME VIA TABLEAU (POPUP iMESSAGE)
+function ouvrirBoiteMail(email, nom) {
+    mailEnCours = email; 
+    const popup = document.getElementById('popup-message');
+    const destinataireNom = document.getElementById('msg-destinataire');
+
+    if (popup && destinataireNom) {
+        destinataireNom.innerText = `À : ${nom}`;
+        popup.style.display = 'flex'; 
+    }
+}
+
+function envoyerMessage() {
+    alert(`🚀 Envoi réussi à : ${mailEnCours}`);
+    document.getElementById('popup-message').style.display = 'none';
+}
+
+// B. SYSTÈME VIA CONSOLE (SAISIE LIBRE)
+function envoyerMailManuel() {
+    const dest = document.getElementById('manual-dest').value;
+    const sujet = document.getElementById('manual-subject').value;
+    const message = document.getElementById('manual-body').value;
+
+    if (!dest || !message) {
+        alert("🚨 Erreur : Le destinataire et le message sont obligatoires.");
+        return;
+    }
+
+    console.log(`Envoi manuel vers : ${dest}`);
+    alert(`🚀 SYSTÈME AFEC : Mail envoyé avec succès à ${dest}`);
+
+    // Réinitialisation des champs
+    document.getElementById('manual-dest').value = "";
+    document.getElementById('manual-subject').value = "";
+    document.getElementById('manual-body').value = "";
+}
+
+// C. CHARGEMENT DES DONNÉES DEPUIS MYSQL
 async function chargerUtilisateurs() {
     const tableBody = document.getElementById('user-table-body');
     if (!tableBody) return;
@@ -98,24 +129,18 @@ async function chargerUtilisateurs() {
             const statutLower = user.statut ? user.statut.toLowerCase() : "green";
             row.className = `row-${statutLower}`; 
 
-            // --- CALCUL DE LA BARRE DE TEMPS (Cycle 5 ans) ---
-            const dureeTotale = 5; 
-            const ansUtilises = parseInt(user.anciennete) || 0;
-            const ansRestants = dureeTotale - ansUtilises;
-            let pourcentage = (ansRestants / dureeTotale) * 100;
+            const ansRestants = 5 - (parseInt(user.anciennete) || 0);
+            let pourcentage = (ansRestants / 5) * 100;
             if (pourcentage < 0) pourcentage = 0;
 
-            let couleurBarre = "#34c759"; // Vert
-            if (ansRestants <= 2) couleurBarre = "#ff9500"; // Orange
-            if (ansRestants <= 1) couleurBarre = "#ff3b30"; // Rouge
+            let couleurBarre = ansRestants <= 1 ? "#ff3b30" : (ansRestants <= 2 ? "#ff9500" : "#34c759");
             
             row.innerHTML = `
                 <td><span class="dot" style="background:${couleurBarre}"></span></td>
                 <td>
-                    <label class="switch-admin">
-                        <input type="checkbox" checked>
-                        <span class="slider-retro round"></span>
-                    </label>
+                    <button onclick="ouvrirBoiteMail('${user.email}', '${user.nom}')" style="cursor:pointer; background:rgba(255,255,255,0.2); border:none; color:white; padding:5px 10px; border-radius:5px;">
+                        ✉️ Alerter
+                    </button>
                 </td>
                 <td>${user.nom}</td>
                 <td>${user.email}</td>
@@ -132,12 +157,12 @@ async function chargerUtilisateurs() {
         });
         updateStats();
     } catch (error) {
-        console.error("Erreur de chargement des données :", error);
+        console.error("Erreur de chargement :", error);
     }
 }
 
 /* ==========================================================
-   3. GESTION DES NOTIFICATIONS ET STATISTIQUES
+   3. NOTIFICATIONS, STATS ET TRI
    ========================================================== */
 
 function verifierEcheanceClient() {
@@ -159,8 +184,7 @@ function demanderLienAcces() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sort-select');
-    const headers = document.querySelectorAll('.sortable');
-
+    
     window.updateStats = () => {
         const countGreen = document.querySelectorAll('.row-green').length;
         const countYellow = document.querySelectorAll('.row-yellow').length;
@@ -173,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function executerTri(critere) {
         const tableBody = document.getElementById('user-table-body');
-        if (!tableBody) return;
         const rows = Array.from(tableBody.querySelectorAll('tr'));
         
         rows.sort((a, b) => {
@@ -184,9 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'anciennete': aCol = a.cells[5]; bCol = b.cells[5]; break;
                 default: return 0;
             }
-            let valA = aCol ? aCol.innerText.toLowerCase() : "";
-            let valB = bCol ? bCol.innerText.toLowerCase() : "";
-            return valA.localeCompare(valB);
+            return aCol.innerText.toLowerCase().localeCompare(bCol.innerText.toLowerCase());
         });
 
         tableBody.innerHTML = "";
@@ -194,11 +215,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if(sortSelect) sortSelect.addEventListener('change', (e) => executerTri(e.target.value));
-
-    headers.forEach(header => {
-        header.addEventListener('click', () => {
-            const critere = header.getAttribute('data-critere');
-            if (critere) executerTri(critere);
-        });
-    });
 });

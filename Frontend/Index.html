@@ -78,6 +78,22 @@
                 </div>
             </div>
 
+            <div class="manual-email-container">
+                <div class="email-box-header">
+                    <span>📧 CONSOLE D'ENVOI MANUELLE</span>
+                </div>
+                <div class="email-box-body">
+                    <div class="input-row">
+                        <input type="email" id="manual-dest" placeholder="Email du client (ex: fatima@afec.fr)">
+                        <input type="text" id="manual-subject" placeholder="Objet (ex: Renouvellement Licence)">
+                    </div>
+                    <textarea id="manual-body" placeholder="Écrivez votre message ici..."></textarea>
+                    <button onclick="envoyerMailManuel()" class="manual-send-btn">
+                        🚀 ENVOYER L'ALERTE MAINTENANT
+                    </button>
+                </div>
+            </div>
+
             <div class="table-container">
                 <table class="pokedex-table">
                     <thead>
@@ -91,7 +107,8 @@
                             <th class="sortable" data-critere="licence">LICENCE ⇅</th>
                         </tr>
                     </thead>
-                    <tbody id="user-table-body"></tbody>
+                    <tbody id="user-table-body">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -104,6 +121,25 @@
                 <p id="message-erreur"></p>
             </div>
             <button onclick="document.getElementById('popup-alerte').style.display='none'" class="alert-button">Réessayer</button>
+        </div>
+    </div>
+
+    <div id="popup-message" class="pokedex-overlay" style="display:none;">
+        <div class="imessage-alert">
+            <div class="alert-content">
+                <h3 id="msg-destinataire" style="color: #1877f2;">Destinataire</h3>
+                <div class="mail-body-manual" style="background: #e9e9eb; color: black; padding: 15px; border-radius: 15px; margin: 10px 0; text-align: left; font-size: 14px;">
+                    <strong>Objet : Alerte de conformité Microsoft</strong>
+                    <p>"Votre licence arrive à échéance. Merci de contacter le support AFEC."</p>
+                </div>
+                <p style="font-size: 11px; color: #666; margin-top: 10px;">
+                    Action : Envoi manuel vers le client.
+                </p>
+            </div>
+            <div class="alert-footer" style="display: flex; border-top: 1px solid rgba(0,0,0,0.1);">
+                <button onclick="document.getElementById('popup-message').style.display='none'" class="alert-button" style="color: #ff3b30; border-right: 1px solid rgba(0,0,0,0.1);">Annuler</button>
+                <button onclick="envoyerMessage()" class="alert-button" style="font-weight: bold;">🚀 Confirmer l'envoi</button>
+            </div>
         </div>
     </div>
 

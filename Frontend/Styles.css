@@ -85,7 +85,10 @@ body {
     background: var(--primary-color); color: white;
     border: none; padding: 14px; border-radius: 10px;
     font-weight: bold; width: 100%; cursor: pointer;
+    transition: opacity 0.2s;
 }
+
+.login-btn:hover { opacity: 0.9; }
 
 /* ==========================================================
    DASHBOARD & TABLEAU
@@ -113,6 +116,7 @@ body {
 .stat-card:nth-child(3) { background-color: var(--danger); }
 
 .pokedex-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.pokedex-table th { color: var(--text-light); text-align: left; padding: 10px; font-size: 12px; }
 .pokedex-table td { padding: 16px; color: white !important; font-weight: 600; }
 
 .row-green { background: linear-gradient(to bottom, #30d158, #24b045) !important; }
@@ -120,29 +124,102 @@ body {
 .row-red { background: linear-gradient(to bottom, #ff453a, #d63027) !important; }
 
 /* ==========================================================
-   BARRE DE TEMPS (TIME BAR)
+   NOUVEAU : CONSOLE D'ENVOI MANUELLE
+   ========================================================== */
+.manual-email-container {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    margin: 20px 0;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.email-box-header {
+    background: var(--border-color);
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.email-box-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.email-box-body input, .email-box-body textarea {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-family: inherit;
+}
+
+.email-box-body input { flex: 1; }
+
+.email-box-body textarea {
+    height: 100px;
+    resize: none;
+}
+
+.manual-send-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.manual-send-btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================
+   BARRE DE TEMPS, POPUPS & NOTIFICATIONS
    ========================================================== */
 .time-bar-container {
-    width: 120px; height: 10px;
+    width: 100px; height: 10px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden; display: inline-block; vertical-align: middle;
 }
 
-.time-bar-fill {
-    height: 100%; border-radius: 20px;
-    transition: width 1s ease-in-out;
-    background: linear-gradient(90deg, #28c940, #34c759);
+.time-bar-fill { height: 100%; border-radius: 20px; transition: width 1s ease-in-out; }
+
+.pokedex-overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
 }
 
-.time-label {
-    display: block; font-size: 10px; margin-top: 4px;
-    font-weight: 700; color: rgba(255, 255, 255, 0.8);
+.imessage-alert {
+    background: rgba(255, 255, 255, 0.95);
+    width: 300px; border-radius: 15px; overflow: hidden;
+    color: black; text-align: center; animation: bounce 0.3s ease-out;
 }
 
-/* ==========================================================
-   NOTIFICATIONS IOS
-   ========================================================== */
+.alert-button {
+    width: 100%; padding: 12px; background: none; border: none;
+    border-top: 1px solid rgba(0,0,0,0.1); color: var(--primary-color);
+    font-size: 16px; font-weight: 600; cursor: pointer;
+}
+
 .ios-notification {
     position: fixed; top: 20px; right: 20px;
     width: 320px; background: rgba(255, 255, 255, 0.85);
@@ -151,28 +228,22 @@ body {
     z-index: 9999; color: black; animation: slideInDown 0.5s ease-out;
 }
 
-@keyframes slideInDown {
-    from { transform: translateY(-150%); }
-    to { transform: translateY(0); }
+/* INTERRUPTEUR RÉTRO */
+.switch-admin { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch-admin input { opacity: 0; width: 0; height: 0; }
+.slider-retro {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 34px;
 }
-
-.notif-header { display: flex; font-size: 11px; color: #666; margin-bottom: 5px; }
-.notif-title { flex-grow: 1; font-weight: 600; }
-.notif-body { font-size: 13px; line-height: 1.4; }
-
-/* ANIMATIONS POINTS PULSATION */
-.dot {
-    height: 8px; width: 8px; background-color: white !important;
-    border-radius: 50%; display: inline-block;
-    animation: typing 1.4s infinite;
+.slider-retro:before {
+    position: absolute; content: ""; height: 14px; width: 14px;
+    left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
 }
+input:checked + .slider-retro { background-color: var(--primary-color); }
+input:checked + .slider-retro:before { transform: translateX(20px); }
 
-@keyframes typing {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-}
+/* ANIMATIONS */
+@keyframes bounce { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes slideInDown { from { transform: translateY(-150%); } to { transform: translateY(0); } }
 
-@keyframes bounce {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
+.dot { height: 8px; width: 8px; background-color: white !important; border-radius: 50%; display: inline-block; margin-right: 5px; }
