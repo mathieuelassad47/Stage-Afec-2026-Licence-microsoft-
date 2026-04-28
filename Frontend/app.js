@@ -70,12 +70,24 @@ function afficherErreurLogin(msg) {
 }
 
 /* ==========================================================
-   2. LOGIQUE DU DASHBOARD & SYSTÈMES D'ENVOI (MANUEL & POPUP)
+   2. LOGIQUE DU DASHBOARD & SUPPRESSION
    ========================================================== */
 
 let mailEnCours = ""; 
 
-// A. SYSTÈME VIA TABLEAU (POPUP iMESSAGE)
+// A. SYSTÈME DE SUPPRESSION (RECYCLAGE)
+function confirmerSuppression(nomEmploye, userId) {
+    const confirmation = confirm(`❗ ATTENTION : Voulez-vous vraiment recycler (supprimer) ${nomEmploye} de la base AFEC ?\nCette action est irréversible.`);
+    
+    if (confirmation) {
+        console.log(`🗑️ Suppression de l'ID ${userId} (${nomEmploye}) demandée.`);
+        // Simulation de suppression (en attendant que ta route DELETE soit prête)
+        alert(`♻️ Recyclage réussi : ${nomEmploye} a été retiré du système.`);
+        chargerUtilisateurs(); // On recharge la liste pour simuler la mise à jour
+    }
+}
+
+// B. SYSTÈME D'ENVOI DE MAIL (POPUP)
 function ouvrirBoiteMail(email, nom) {
     mailEnCours = email; 
     const popup = document.getElementById('popup-message');
@@ -92,27 +104,10 @@ function envoyerMessage() {
     document.getElementById('popup-message').style.display = 'none';
 }
 
-// B. SYSTÈME VIA CONSOLE (SAISIE LIBRE)
-function envoyerMailManuel() {
-    const dest = document.getElementById('manual-dest').value;
-    const sujet = document.getElementById('manual-subject').value;
-    const message = document.getElementById('manual-body').value;
+/* ==========================================================
+   3. CHARGEMENT ET RENDER DU TABLEAU
+   ========================================================== */
 
-    if (!dest || !message) {
-        alert("🚨 Erreur : Le destinataire et le message sont obligatoires.");
-        return;
-    }
-
-    console.log(`Envoi manuel vers : ${dest}`);
-    alert(`🚀 SYSTÈME AFEC : Mail envoyé avec succès à ${dest}`);
-
-    // Réinitialisation des champs
-    document.getElementById('manual-dest').value = "";
-    document.getElementById('manual-subject').value = "";
-    document.getElementById('manual-body').value = "";
-}
-
-// C. CHARGEMENT DES DONNÉES DEPUIS MYSQL
 async function chargerUtilisateurs() {
     const tableBody = document.getElementById('user-table-body');
     if (!tableBody) return;
@@ -126,21 +121,21 @@ async function chargerUtilisateurs() {
 
         utilisateurs.forEach(user => {
             const row = document.createElement('tr');
-            const statutLower = user.statut ? user.statut.toLowerCase() : "green";
-            row.className = `row-${statutLower}`; 
-
+            
+            // Logique de couleur basée sur l'ancienneté ou le statut
             const ansRestants = 5 - (parseInt(user.anciennete) || 0);
             let pourcentage = (ansRestants / 5) * 100;
             if (pourcentage < 0) pourcentage = 0;
-
             let couleurBarre = ansRestants <= 1 ? "#ff3b30" : (ansRestants <= 2 ? "#ff9500" : "#34c759");
             
+            const statutLower = ansRestants <= 1 ? "red" : (ansRestants <= 2 ? "yellow" : "green");
+            row.className = `row-${statutLower}`; 
+
             row.innerHTML = `
                 <td><span class="dot" style="background:${couleurBarre}"></span></td>
                 <td>
-                    <button onclick="ouvrirBoiteMail('${user.email}', '${user.nom}')" style="cursor:pointer; background:rgba(255,255,255,0.2); border:none; color:white; padding:5px 10px; border-radius:5px;">
-                        ✉️ Alerter
-                    </button>
+                    <button onclick="ouvrirBoiteMail('${user.email}', '${user.nom}')" class="btn-action">✉️ Alerter</button>
+                    <button onclick="confirmerSuppression('${user.nom}', '${user.id}')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
                 </td>
                 <td>${user.nom}</td>
                 <td>${user.email}</td>
@@ -162,7 +157,7 @@ async function chargerUtilisateurs() {
 }
 
 /* ==========================================================
-   3. NOTIFICATIONS, STATS ET TRI
+   4. NOTIFICATIONS ET TRI
    ========================================================== */
 
 function verifierEcheanceClient() {
@@ -176,10 +171,6 @@ function verifierEcheanceClient() {
             }
         }, 1500);
     }
-}
-
-function demanderLienAcces() {
-    alert("Simulation : Lien de secours envoyé sur votre boîte mail AFEC.");
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,5 +1,5 @@
 /* ==========================================================
-   VARIABLES DARK MODERN
+   VARIABLES DARK MODERN (Charte AFEC)
    ========================================================= */
 :root {
     --bg-color: #0f172a;
@@ -12,6 +12,9 @@
     --danger: #ff3b30;  
     --border-color: #334155;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-pill: 20px;
 }
 
 body {
@@ -52,7 +55,7 @@ body {
 }
 
 /* ==========================================================
-   LAYOUT LOGIN (FACEBOOK STYLE)
+   LAYOUT LOGIN
    ========================================================== */
 .fb-container {
     display: flex;
@@ -91,40 +94,61 @@ body {
 .login-btn:hover { opacity: 0.9; }
 
 /* ==========================================================
-   DASHBOARD & TABLEAU
+   DASHBOARD & TABLEAU (STYLE AFEC)
    ========================================================== */
 .pokedex-frame {
     background: var(--card-bg);
-    border-radius: 20px; padding: 30px;
+    border-radius: var(--radius-lg); padding: 30px;
     max-width: 1150px; margin: 40px auto;
     box-shadow: var(--shadow);
 }
 
-.dashboard-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    padding: 20px; border-radius: 25px;
-    text-align: center; color: white;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4);
-}
-
-.stat-card:nth-child(1) { background-color: var(--success); }
-.stat-card:nth-child(2) { background-color: var(--warning); }
-.stat-card:nth-child(3) { background-color: var(--danger); }
-
+/* Les lignes du tableau stylisées */
 .pokedex-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
 .pokedex-table th { color: var(--text-light); text-align: left; padding: 10px; font-size: 12px; }
 .pokedex-table td { padding: 16px; color: white !important; font-weight: 600; }
 
+/* Style des rangées avec dégradés AFEC */
 .row-green { background: linear-gradient(to bottom, #30d158, #24b045) !important; }
 .row-yellow { background: linear-gradient(to bottom, #ffcc00, #e6b800) !important; }
 .row-red { background: linear-gradient(to bottom, #ff453a, #d63027) !important; }
 
+/* Nouveau : Conteneur de ligne moderne (pour affichage liste alternative) */
+.user-row {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
 /* ==========================================================
-   NOUVEAU : CONSOLE D'ENVOI MANUELLE
+   BOUTONS DE STATUT ET ACTIONS
+   ========================================================== */
+.btn-status {
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+}
+
+.btn-status:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Couleurs spécifiques boutons */
+.critique { background-color: var(--danger); color: white; }
+.inactif { background-color: var(--warning); color: white; }
+.actif { background-color: var(--success); color: white; }
+
+/* ==========================================================
+   CONSOLE D'ENVOI MANUELLE
    ========================================================== */
 .manual-email-container {
     background: var(--card-bg);
@@ -150,10 +174,7 @@ body {
     gap: 10px;
 }
 
-.input-row {
-    display: flex;
-    gap: 10px;
-}
+.input-row { display: flex; gap: 10px; }
 
 .email-box-body input, .email-box-body textarea {
     background: #0f172a;
@@ -165,31 +186,35 @@ body {
 }
 
 .email-box-body input { flex: 1; }
-
-.email-box-body textarea {
-    height: 100px;
-    resize: none;
-}
+.email-box-body textarea { height: 100px; resize: none; }
 
 .manual-send-btn {
     background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    color: white; border: none; padding: 12px;
+    border-radius: 8px; font-weight: bold;
+    cursor: pointer; transition: 0.3s;
 }
 
-.manual-send-btn:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-}
+.manual-send-btn:hover { background: #2563eb; transform: translateY(-2px); }
 
 /* ==========================================================
-   BARRE DE TEMPS, POPUPS & NOTIFICATIONS
+   STATS, BARRES DE TEMPS & UI COMPONENTS
    ========================================================== */
+.dashboard-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    padding: 20px; border-radius: 25px;
+    text-align: center; color: white;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.stat-card:nth-child(1) { background-color: var(--success); }
+.stat-card:nth-child(2) { background-color: var(--warning); }
+.stat-card:nth-child(3) { background-color: var(--danger); }
+
 .time-bar-container {
     width: 100px; height: 10px;
     background: rgba(0, 0, 0, 0.3);
@@ -199,6 +224,11 @@ body {
 
 .time-bar-fill { height: 100%; border-radius: 20px; transition: width 1s ease-in-out; }
 
+.dot { height: 8px; width: 8px; background-color: white !important; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+/* ==========================================================
+   POPUPS & NOTIFICATIONS IOS STYLE
+   ========================================================== */
 .pokedex-overlay {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
@@ -228,22 +258,6 @@ body {
     z-index: 9999; color: black; animation: slideInDown 0.5s ease-out;
 }
 
-/* INTERRUPTEUR RÉTRO */
-.switch-admin { position: relative; display: inline-block; width: 40px; height: 20px; }
-.switch-admin input { opacity: 0; width: 0; height: 0; }
-.slider-retro {
-    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc; transition: .4s; border-radius: 34px;
-}
-.slider-retro:before {
-    position: absolute; content: ""; height: 14px; width: 14px;
-    left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
-}
-input:checked + .slider-retro { background-color: var(--primary-color); }
-input:checked + .slider-retro:before { transform: translateX(20px); }
-
 /* ANIMATIONS */
 @keyframes bounce { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes slideInDown { from { transform: translateY(-150%); } to { transform: translateY(0); } }
-
-.dot { height: 8px; width: 8px; background-color: white !important; border-radius: 50%; display: inline-block; margin-right: 5px; }
