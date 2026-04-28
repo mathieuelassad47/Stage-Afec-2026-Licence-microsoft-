@@ -6,6 +6,8 @@ const mysql = require('mysql2');
 const app = express();
 const PORT = 3000;
 
+let dbConnected = false;
+
 /* ==========================================================
     1. CONNEXION À LA BASE DE DONNÉES (MySQL)
    ========================================================== */
@@ -18,74 +20,75 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('❌ Erreur de connexion SQL (Vérifie XAMPP) :', err.message);
+        console.log('⚠️ MODE SANS DATABASE : MySQL est inaccessible (Vérifie XAMPP).');
+        console.log('☁️ Le serveur utilisera une validation simulée pour le login.');
+        dbConnected = false;
     } else {
         console.log('✅ Tunnel établi avec MySQL (Base : afec_microsoft)');
+        dbConnected = true;
     }
 });
 
 /* ==========================================================
     2. CONFIGURATION ET MIDDLEWARES
    ========================================================== */
+// Permet au serveur de lire le format JSON
 app.use(express.json());
+
+// DIT AU SERVEUR OÙ TROUVER TES FICHIERS (HTML, CSS, JS)
+// Ton dossier doit s'appeler "public" et être dans le dossier "Backend"
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* ==========================================================
-    3. ROUTES API (Les Portes de ton application)
+    3. ROUTES API (Le "Cerveau")
    ========================================================== */
 
 /**
- * ROUTE DE CONNEXION : Vérification dans la base MySQL
- * Gère les appels vers /api/login et /login
+ * LOGIN : Vérifie les accès (Hybride)
  */
 const handleLogin = (req, res) => {
     const { email, password } = req.body;
 
-    // Requête SQL utilisant "mot_de_passe" pour correspondre à ton phpMyAdmin
-    const sql = "SELECT * FROM utilisateurs WHERE mail = ? AND mot_de_passe = ?";
-    
-    db.query(sql, [email, password], (err, result) => {
-        if (err) {
-            console.error("Erreur SQL:", err);
-            return res.status(500).json({ auth: false, message: "Erreur serveur" });
-        }
-
-        if (result.length > 0) {
-            // ✅ LOGIN RÉUSSI
-            console.log(`🔓 Connexion réussie pour : ${email}`);
-            res.status(200).json({ 
-                auth: true, 
-                message: "Bienvenue !", 
-                user: result[0] // Renvoie toutes les infos de l'utilisateur
-            });
-        } else {
-            // ❌ ACCÈS REFUSÉ
-            console.log(`🚫 Échec de connexion pour : ${email}`);
-            res.status(401).json({ auth: false, message: "Identifiants incorrects" });
-        }
-    });
+    if (dbConnected) {
+        const sql = "SELECT * FROM utilisateurs WHERE mail = ? AND mot_de_passe = ?";
+        db.query(sql, [email, password], (err, result) => {
+            if (err) {
+                console.error("Erreur SQL:", err);
+                return res.status(500).json({ auth: false, message: "Erreur serveur" });
+            }
+            if (result.length > 0) {
+                console.log(`🔓 Connexion SQL réussie : ${email}`);
+                res.status(200).json({ auth: true, message: "Bienvenue !", user: result[0] });
+            } else {
+                res.status(401).json({ auth: false, message: "Identifiants incorrects" });
+            }
+        });
+    } else {
+        console.log(`☁️ Connexion simulée (Mode Démo) : ${email}`);
+        res.status(200).json({ 
+            auth: true, 
+            message: "Bienvenue (Mode Démo) !", 
+            user: { mail: email, nom: "Utilisateur Test" } 
+        });
+    }
 };
 
 app.post('/api/login', handleLogin);
 app.post('/login', handleLogin);
 
 /**
- * ROUTE UTILISATEURS : Lecture du fichier JSON
- * Utilisé pour afficher la liste dans le tableau de bord
+ * LISTE UTILISATEURS : Lit le fichier user.json
  */
 const USERS_FILE = path.join(__dirname, 'user.json');
 
 app.get('/api/users', (req, res) => {
     try {
         if (!fs.existsSync(USERS_FILE)) {
-            console.error("Fichier user.json absent.");
             return res.status(404).json({ error: "Fichier user.json absent." });
         }
-        
         const data = fs.readFileSync(USERS_FILE, 'utf8');
         res.json(JSON.parse(data));
     } catch (err) {
-        console.error("Erreur lors de la lecture des données JSON:", err);
         res.status(500).json({ error: "Erreur lecture données." });
     }
 });
@@ -96,9 +99,10 @@ app.get('/api/users', (req, res) => {
 app.listen(PORT, () => {
     console.log(`
     ==================================================
-    🚀 SERVEUR AFEC : COMMUTATION FULL-STACK RÉUSSIE
+    🚀 SERVEUR AFEC : SYSTÈME HYBRIDE ACTIVÉ
     🌍 URL : http://localhost:${PORT}
-    📁 Liaison : MySQL (afec_microsoft) + user.json
+    📁 Dossier public : Connecté
+    📁 Data : MySQL (si dispo) ou JSON (secours)
     ==================================================
     `);
 });
