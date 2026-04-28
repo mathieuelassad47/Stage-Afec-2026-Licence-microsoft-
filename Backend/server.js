@@ -30,21 +30,21 @@ db.connect((err) => {
 });
 
 /* ==========================================================
-    2. CONFIGURATION ET MIDDLEWARES
+    2. CONFIGURATION ET MIDDLEWARES (La Fusion)
    ========================================================== */
-// Permet au serveur de lire le format JSON
+// Permet au serveur de lire le format JSON envoyé par le Front-end
 app.use(express.json());
 
-// DIT AU SERVEUR OÙ TROUVER TES FICHIERS (HTML, CSS, JS)
-// Ton dossier doit s'appeler "public" et être dans le dossier "Backend"
+// CETTE LIGNE FAIT LA FUSION : Elle dit au serveur de servir les fichiers
+// contenus dans le dossier "public" (ton HTML, CSS, app.js)
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* ==========================================================
-    3. ROUTES API (Le "Cerveau")
+    3. ROUTES API (Le "Cerveau" de l'application)
    ========================================================== */
 
 /**
- * LOGIN : Vérifie les accès (Hybride)
+ * LOGIN : Vérifie les accès (Mode Hybride MySQL / Démo)
  */
 const handleLogin = (req, res) => {
     const { email, password } = req.body;
@@ -64,6 +64,7 @@ const handleLogin = (req, res) => {
             }
         });
     } else {
+        // Système de secours si MySQL est éteint
         console.log(`☁️ Connexion simulée (Mode Démo) : ${email}`);
         res.status(200).json({ 
             auth: true, 
@@ -74,10 +75,9 @@ const handleLogin = (req, res) => {
 };
 
 app.post('/api/login', handleLogin);
-app.post('/login', handleLogin);
 
 /**
- * LISTE UTILISATEURS : Lit le fichier user.json
+ * LISTE UTILISATEURS : Lit le fichier user.json (Ta Data RH)
  */
 const USERS_FILE = path.join(__dirname, 'user.json');
 
@@ -89,6 +89,7 @@ app.get('/api/users', (req, res) => {
         const data = fs.readFileSync(USERS_FILE, 'utf8');
         res.json(JSON.parse(data));
     } catch (err) {
+        console.error("Erreur lecture JSON:", err);
         res.status(500).json({ error: "Erreur lecture données." });
     }
 });
@@ -101,7 +102,7 @@ app.listen(PORT, () => {
     ==================================================
     🚀 SERVEUR AFEC : SYSTÈME HYBRIDE ACTIVÉ
     🌍 URL : http://localhost:${PORT}
-    📁 Dossier public : Connecté
+    📁 Dossier public : Connecté (Sert ton HTML/CSS/JS)
     📁 Data : MySQL (si dispo) ou JSON (secours)
     ==================================================
     `);

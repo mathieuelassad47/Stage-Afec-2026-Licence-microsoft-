@@ -42,16 +42,24 @@ async function authentifier() {
 }
 
 function lancerAnimationConnexion(email) {
-    document.getElementById('loading-email').innerText = email;
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('loading-screen').style.display = 'flex';
+    const loadingScreen = document.getElementById('loading-screen');
+    if(loadingScreen) {
+        document.getElementById('loading-email').innerText = email;
+        document.getElementById('login-section').style.display = 'none';
+        loadingScreen.style.display = 'flex';
 
-    setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            chargerUtilisateurs();
+            verifierEcheanceClient();
+        }, 2000);
+    } else {
+        // Fallback si l'écran de chargement n'existe pas dans ton HTML
+        document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         chargerUtilisateurs();
-        verifierEcheanceClient();
-    }, 2000);
+    }
 }
 
 function afficherErreurLogin(msg) {
@@ -70,7 +78,7 @@ function afficherErreurLogin(msg) {
 }
 
 /* ==========================================================
-   2. LOGIQUE DU DASHBOARD & SUPPRESSION
+   2. LOGIQUE DU DASHBOARD, SUPPRESSION & AJOUT
    ========================================================== */
 
 let mailEnCours = ""; 
@@ -81,9 +89,9 @@ function confirmerSuppression(nomEmploye, userId) {
     
     if (confirmation) {
         console.log(`🗑️ Suppression de l'ID ${userId} (${nomEmploye}) demandée.`);
-        // Simulation de suppression (en attendant que ta route DELETE soit prête)
         alert(`♻️ Recyclage réussi : ${nomEmploye} a été retiré du système.`);
-        chargerUtilisateurs(); // On recharge la liste pour simuler la mise à jour
+        // Note: On pourrait ici appeler une route DELETE
+        chargerUtilisateurs(); 
     }
 }
 
@@ -104,12 +112,62 @@ function envoyerMessage() {
     document.getElementById('popup-message').style.display = 'none';
 }
 
+// C. AJOUT MANUEL D'UN UTILISATEUR
+function ajouterUtilisateur() {
+    const nom = document.getElementById('new-nom').value;
+    const email = document.getElementById('new-email').value;
+    const ville = document.getElementById('new-ville').value;
+    const statut = document.getElementById('new-statut').value; // 'Green', 'Yellow' ou 'Red'
+
+    if(nom === "" || email === "") {
+        alert("Merci de remplir au moins le nom et l'email");
+        return;
+    }
+
+    const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
+    if (!tableBody) return;
+
+    // Calcul visuel identique au chargement principal
+    const couleurBarre = statut === "Red" ? "#ff3b30" : (statut === "Yellow" ? "#ff9500" : "#34c759");
+    const row = document.createElement('tr');
+    row.className = `row-${statut.toLowerCase()}`; 
+
+    row.innerHTML = `
+        <td><span class="dot" style="background:${couleurBarre}"></span></td>
+        <td>
+            <button onclick="ouvrirBoiteMail('${email}', '${nom}')" class="btn-action">✉️ Alerter</button>
+            <button onclick="confirmerSuppression('${nom}', 'new')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
+        </td>
+        <td><strong>${nom}</strong></td>
+        <td>${email}</td>
+        <td>${ville || "AFEC France"}</td>
+        <td>
+            <div class="time-bar-container" style="background:#eee; width:80px; height:8px; border-radius:5px;">
+                <div class="time-bar-fill" style="width: 100%; background: ${couleurBarre}; height:100%; border-radius:5px;"></div>
+            </div>
+            <span class="time-label" style="font-size:10px;">5 AN(S) RESTANT(S)</span>
+        </td>
+        <td>WINDOWS 11 PRO</td>
+    `;
+    
+    // On ajoute en haut de la liste
+    tableBody.insertBefore(row, tableBody.firstChild);
+    
+    // Nettoyage des champs
+    document.getElementById('new-nom').value = "";
+    document.getElementById('new-email').value = "";
+    document.getElementById('new-ville').value = "";
+    
+    updateStats();
+    alert(nom + " a été ajouté avec succès au dashboard !");
+}
+
 /* ==========================================================
-   3. CHARGEMENT ET RENDER DU TABLEAU
+   3. CHARGEMENT ET RENDER DU TABLEAU (FETCH JSON)
    ========================================================== */
 
 async function chargerUtilisateurs() {
-    const tableBody = document.getElementById('user-table-body');
+    const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
     if (!tableBody) return;
 
     try {
@@ -120,15 +178,13 @@ async function chargerUtilisateurs() {
         tableBody.innerHTML = ""; 
 
         utilisateurs.forEach(user => {
-            const row = document.createElement('tr');
-            
-            // Logique de couleur basée sur l'ancienneté ou le statut
             const ansRestants = 5 - (parseInt(user.anciennete) || 0);
             let pourcentage = (ansRestants / 5) * 100;
             if (pourcentage < 0) pourcentage = 0;
             let couleurBarre = ansRestants <= 1 ? "#ff3b30" : (ansRestants <= 2 ? "#ff9500" : "#34c759");
             
             const statutLower = ansRestants <= 1 ? "red" : (ansRestants <= 2 ? "yellow" : "green");
+            const row = document.createElement('tr');
             row.className = `row-${statutLower}`; 
 
             row.innerHTML = `
@@ -161,8 +217,8 @@ async function chargerUtilisateurs() {
    ========================================================== */
 
 function verifierEcheanceClient() {
-    const currentUserEmail = document.getElementById('email').value;
-    if (currentUserEmail === "fatima.douah@afec.fr") {
+    const emailField = document.getElementById('email');
+    if (emailField && emailField.value === "fatima.douah@afec.fr") {
         setTimeout(() => {
             const notif = document.getElementById('client-notification');
             if (notif) {
@@ -187,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function executerTri(critere) {
-        const tableBody = document.getElementById('user-table-body');
+        const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
         const rows = Array.from(tableBody.querySelectorAll('tr'));
         
         rows.sort((a, b) => {

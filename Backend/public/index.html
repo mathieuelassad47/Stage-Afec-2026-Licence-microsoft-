@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Styles.css">
     <title>AFEC - Gestion Licences Microsoft</title>
+    <link rel="stylesheet" href="Styles.css">
 </head>
 <body>
 
@@ -16,81 +16,54 @@
         </div>
         <div class="notif-body">
             <strong>Licence Windows</strong>
-            <p>Attention : Votre licence expire dans 3 jours. Merci de contacter le support informatique.</p>
+            <p>Attention : Votre licence expire bientôt.</p>
         </div>
     </div>
 
     <section id="login-section" class="fb-container">
         <div class="fb-text">
             <h1 class="fb-logo">AFEC Microsoft</h1>
-            <p>Gérez vos licences Windows et surveillez la conformité de votre parc informatique en temps réel.</p>
+            <p>Gérez vos licences Windows et surveillez la conformité en temps réel.</p>
         </div>
 
         <div class="fb-login-box">
             <div class="login-card">
                 <div class="user-avatar">👤</div>
                 <h3>ADMIN CONNEXION</h3>
-                
                 <input type="email" id="email" placeholder="Email Admin" class="login-input">
                 <input type="password" id="password" placeholder="Mot de passe" class="login-input">
-                
                 <button onclick="authentifier()" class="login-btn">Se connecter</button>
-
-                <p style="margin-top: 15px; font-size: 13px;">
-                    <a href="#" onclick="demanderLienAcces()" style="color: #1877f2; text-decoration: none; font-weight: 500;">
-                        Mot de passe oublié
-                    </a>
-                </p>
-                
-                <div class="fb-divider"></div>
-                
-                <p style="font-size: 12px; color: gray; text-align: center;">
-                    Réservé au service informatique de l'AFEC.
-                </p>
             </div>
         </div>
     </section>
-
-    <div id="loading-screen" style="display: none;">
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <p>Authentification en cours...</p>
-            <p id="loading-email" style="font-weight: bold; color: #1877f2;"></p>
-        </div>
-    </div>
 
     <section id="dashboard-section" style="display: none;">
         <div class="pokedex-frame">
             <h1 class="pokedex-title">GESTION LICENCES WINDOWS - AFEC</h1>
 
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="count-green">0</div>
-                    <div class="stat-label">CONFORMES</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="count-yellow">0</div>
-                    <div class="stat-label">À RECYCLER</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="count-red">0</div>
-                    <div class="stat-label">CRITIQUES</div>
+            <div class="pokedex-controls" style="margin-bottom: 20px;">
+                <div class="dropdown">
+                    <button class="dropbtn">▼ TRIER L'INVENTAIRE</button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="executerTri('nom')">NOM (A-Z)</a>
+                        <a href="#" onclick="executerTri('anciennete')">ANCIENNETÉ (+ au -)</a>
+                        <a href="#" onclick="executerTri('ville')">VILLE (A-Z)</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="manual-email-container">
-                <div class="email-box-header">
-                    <span>📧 CONSOLE D'ENVOI MANUELLE</span>
-                </div>
-                <div class="email-box-body">
-                    <div class="input-row">
-                        <input type="email" id="manual-dest" placeholder="Email du client (ex: fatima@afec.fr)">
-                        <input type="text" id="manual-subject" placeholder="Objet (ex: Renouvellement Licence)">
-                    </div>
-                    <textarea id="manual-body" placeholder="Écrivez votre message ici..."></textarea>
-                    <button onclick="envoyerMailManuel()" class="manual-send-btn">
-                        🚀 ENVOYER L'ALERTE MAINTENANT
-                    </button>
+            <div class="pokedex-frame add-user-box" style="background: rgba(255,255,255,0.05); margin-bottom: 20px; padding: 15px;">
+                <h3 style="color: white; margin-bottom: 10px;">➕ AJOUTER UN NOUVEL INTERVENANT</h3>
+                <div class="form-grid" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="new-nom" placeholder="Nom Complet" style="padding: 8px; flex: 1;">
+                    <input type="email" id="new-email" placeholder="Email" style="padding: 8px; flex: 1;">
+                    <input type="text" id="new-ville" placeholder="Ville" style="padding: 8px; flex: 1;">
+                    <select id="new-statut" style="padding: 8px;">
+                        <option value="Green">Conforme (Green)</option>
+                        <option value="Yellow">A surveiller (Yellow)</option>
+                        <option value="Red">Critique (Red)</option>
+                    </select>
+                    <button onclick="ajouterUtilisateur()" class="login-btn" style="padding: 8px 20px; width: auto; margin-top: 0;">Ajouter</button>
                 </div>
             </div>
 
@@ -98,51 +71,48 @@
                 <table class="pokedex-table">
                     <thead>
                         <tr>
-                            <th class="sortable" data-critere="statut">SIGNAL ⇅</th>
+                            <th>SIGNAL</th>
                             <th>ACTIONS</th> 
-                            <th class="sortable" data-critere="nom">INTERVENANT ⇅</th>
-                            <th class="sortable" data-critere="email">EMAIL ⇅</th>
-                            <th class="sortable" data-critere="ville">VILLE ⇅</th>
-                            <th class="sortable" data-critere="anciennete">DURÉE RESTANTE ⇅</th>
-                            <th class="sortable" data-critere="licence">LICENCE ⇅</th>
+                            <th class="sortable">INTERVENANT</th>
+                            <th class="sortable">EMAIL</th>
+                            <th class="sortable">VILLE / AGENCE</th>
+                            <th class="sortable">ANCIENNETÉ</th>
+                            <th class="sortable">LICENCE</th>
                         </tr>
                     </thead>
-                    <tbody id="user-table-body">
-                        </tbody>
+                    <tbody id="corps-tableau-rh">
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ALVES Maria</td><td>m.alves@afec.fr</td><td>Afec à distance</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BERNARD Jean</td><td>j.bernard@afec.fr</td><td>Agen</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>DURAND Sophie</td><td>s.durand@afec.fr</td><td>Amiens</td><td>12 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>PETIT Lucas</td><td>l.petit@afec.fr</td><td>Angoulême</td><td>1 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MOREAU Emma</td><td>e.moreau@afec.fr</td><td>Bayonne</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LEFEBVRE Thomas</td><td>t.lefebvre@afec.fr</td><td>Beauvais</td><td>10 ANS</td><td>WINDOWS 10 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ROUX Julie</td><td>j.roux@afec.fr</td><td>Bordeaux</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GARCIA Antoine</td><td>a.garcia@afec.fr</td><td>Cergy</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BERTRAND Chloe</td><td>c.bertrand@afec.fr</td><td>Châlons-en-Champagne</td><td>7 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>FOURNIER Hugo</td><td>h.fournier@afec.fr</td><td>Chartres</td><td>15 ANS</td><td>WINDOWS 7</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GIRARD Manon</td><td>m.girard@afec.fr</td><td>Corbeil-Essonnes</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ANDRE Paul</td><td>p.andre@afec.fr</td><td>Créteil</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MULLER Clara</td><td>c.muller@afec.fr</td><td>Dax</td><td>1 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LEFEVRE Pierre</td><td>p.lefevre@afec.fr</td><td>Jeanne Blum</td><td>9 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MERCIER Sarah</td><td>s.mercier@afec.fr</td><td>La Rochelle</td><td>11 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BONNET Nicolas</td><td>n.bonnet@afec.fr</td><td>Lille</td><td>2 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>VINCENT Lea</td><td>l.vincent@afec.fr</td><td>Lyon</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LAMBERT Tom</td><td>t.lambert@afec.fr</td><td>M-Laffitte</td><td>0 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MASSON Ines</td><td>i.masson@afec.fr</td><td>Montargis</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MATHIEU Leo</td><td>l.mathieu@afec.fr</td><td>Nanterre</td><td>13 ANS</td><td>WINDOWS 10 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GUERIN Camille</td><td>c.guerin@afec.fr</td><td>Orléans</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BOYER Maxime</td><td>m.boyer@afec.fr</td><td>Pantin</td><td>8 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>PHILIPPE Zoe</td><td>z.philippe@afec.fr</td><td>Pau</td><td>10 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LECLERC Jules</td><td>j.leclerc@afec.fr</td><td>Pithiviers</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GUTIERREZ Ana</td><td>a.gutierrez@afec.fr</td><td>Vernouillet</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <div id="popup-alerte" class="pokedex-overlay" style="display:none;">
-        <div class="imessage-alert">
-            <div class="alert-content">
-                <h3>Accès Refusé</h3>
-                <p id="message-erreur"></p>
-            </div>
-            <button onclick="document.getElementById('popup-alerte').style.display='none'" class="alert-button">Réessayer</button>
-        </div>
-    </div>
-
-    <div id="popup-message" class="pokedex-overlay" style="display:none;">
-        <div class="imessage-alert">
-            <div class="alert-content">
-                <h3 id="msg-destinataire" style="color: #1877f2;">Destinataire</h3>
-                <div class="mail-body-manual" style="background: #e9e9eb; color: black; padding: 15px; border-radius: 15px; margin: 10px 0; text-align: left; font-size: 14px;">
-                    <strong>Objet : Alerte de conformité Microsoft</strong>
-                    <p>"Votre licence arrive à échéance. Merci de contacter le support AFEC."</p>
-                </div>
-                <p style="font-size: 11px; color: #666; margin-top: 10px;">
-                    Action : Envoi manuel vers le client.
-                </p>
-            </div>
-            <div class="alert-footer" style="display: flex; border-top: 1px solid rgba(0,0,0,0.1);">
-                <button onclick="document.getElementById('popup-message').style.display='none'" class="alert-button" style="color: #ff3b30; border-right: 1px solid rgba(0,0,0,0.1);">Annuler</button>
-                <button onclick="envoyerMessage()" class="alert-button" style="font-weight: bold;">🚀 Confirmer l'envoi</button>
-            </div>
-        </div>
-    </div>
-
     <script src="app.js"></script>
+
 </body>
 </html>
