@@ -41,13 +41,35 @@
         <div class="pokedex-frame">
             <h1 class="pokedex-title">GESTION LICENCES WINDOWS - AFEC</h1>
 
+            <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
+                <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="color: var(--text-light); font-size: 12px;">TOTAL LICENCES</span>
+                    <h2 id="total-licences" style="margin: 5px 0; color: var(--primary-color);">0</h2>
+                </div>
+                <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="color: var(--text-light); font-size: 12px;">CONFORMES (GREEN)</span>
+                    <h2 id="count-green" style="margin: 5px 0; color: var(--success);">0</h2>
+                </div>
+                <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="color: var(--text-light); font-size: 12px;">CRITIQUES (RED)</span>
+                    <h2 id="count-red" style="margin: 5px 0; color: var(--danger);">0</h2>
+                </div>
+            </div>
+
             <div class="pokedex-controls" style="margin-bottom: 20px;">
                 <div class="dropdown">
                     <button class="dropbtn">▼ TRIER L'INVENTAIRE</button>
+                    
+                    <div class="pokedex-popup">
+                        NOUVEAU ! <br> Gère tes filtres ici
+                        <span class="close-popup" onclick="this.parentElement.style.display='none'">×</span>
+                    </div>
+
                     <div class="dropdown-content">
                         <a href="#" onclick="executerTri('nom')">NOM (A-Z)</a>
                         <a href="#" onclick="executerTri('anciennete')">ANCIENNETÉ (+ au -)</a>
                         <a href="#" onclick="executerTri('ville')">VILLE (A-Z)</a>
+                        <a href="#">STATUT (COULEUR)</a>
                     </div>
                 </div>
             </div>
@@ -73,39 +95,39 @@
                         <tr>
                             <th>SIGNAL</th>
                             <th>ACTIONS</th> 
-                            <th class="sortable">INTERVENANT</th>
-                            <th class="sortable">EMAIL</th>
-                            <th class="sortable">VILLE / AGENCE</th>
-                            <th class="sortable">ANCIENNETÉ</th>
-                            <th class="sortable">LICENCE</th>
+                            <th class="sortable">INTERVENANT <span>⇅</span></th>
+                            <th class="sortable">EMAIL <span>⇅</span></th>
+                            <th class="sortable">VILLE / AGENCE <span>⇅</span></th>
+                            <th class="sortable">ANCIENNETÉ <span>⇅</span></th>
+                            <th class="sortable">LICENCE <span>⇅</span></th>
                         </tr>
                     </thead>
                     <tbody id="corps-tableau-rh">
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ALVES Maria</td><td>m.alves@afec.fr</td><td>Afec à distance</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BERNARD Jean</td><td>j.bernard@afec.fr</td><td>Agen</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>DURAND Sophie</td><td>s.durand@afec.fr</td><td>Amiens</td><td>12 ANS</td><td>WINDOWS 10 HOME</td></tr>
-                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>PETIT Lucas</td><td>l.petit@afec.fr</td><td>Angoulême</td><td>1 AN</td><td>NON OBTENUE</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MOREAU Emma</td><td>e.moreau@afec.fr</td><td>Bayonne</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LEFEBVRE Thomas</td><td>t.lefebvre@afec.fr</td><td>Beauvais</td><td>10 ANS</td><td>WINDOWS 10 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ROUX Julie</td><td>j.roux@afec.fr</td><td>Bordeaux</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GARCIA Antoine</td><td>a.garcia@afec.fr</td><td>Cergy</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BERTRAND Chloe</td><td>c.bertrand@afec.fr</td><td>Châlons-en-Champagne</td><td>7 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>FOURNIER Hugo</td><td>h.fournier@afec.fr</td><td>Chartres</td><td>15 ANS</td><td>WINDOWS 7</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GIRARD Manon</td><td>m.girard@afec.fr</td><td>Corbeil-Essonnes</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>ANDRE Paul</td><td>p.andre@afec.fr</td><td>Créteil</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MULLER Clara</td><td>c.muller@afec.fr</td><td>Dax</td><td>1 AN</td><td>NON OBTENUE</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LEFEVRE Pierre</td><td>p.lefevre@afec.fr</td><td>Jeanne Blum</td><td>9 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MERCIER Sarah</td><td>s.mercier@afec.fr</td><td>La Rochelle</td><td>11 ANS</td><td>WINDOWS 10 HOME</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BONNET Nicolas</td><td>n.bonnet@afec.fr</td><td>Lille</td><td>2 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>VINCENT Lea</td><td>l.vincent@afec.fr</td><td>Lyon</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LAMBERT Tom</td><td>t.lambert@afec.fr</td><td>M-Laffitte</td><td>0 AN</td><td>NON OBTENUE</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MASSON Ines</td><td>i.masson@afec.fr</td><td>Montargis</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>MATHIEU Leo</td><td>l.mathieu@afec.fr</td><td>Nanterre</td><td>13 ANS</td><td>WINDOWS 10 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GUERIN Camille</td><td>c.guerin@afec.fr</td><td>Orléans</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>BOYER Maxime</td><td>m.boyer@afec.fr</td><td>Pantin</td><td>8 ANS</td><td>WINDOWS 11 PRO</td></tr>
-                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>PHILIPPE Zoe</td><td>z.philippe@afec.fr</td><td>Pau</td><td>10 ANS</td><td>WINDOWS 10 HOME</td></tr>
-                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>LECLERC Jules</td><td>j.leclerc@afec.fr</td><td>Pithiviers</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
-                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Alerte envoyée')">✉️</button></td><td>GUTIERREZ Ana</td><td>a.gutierrez@afec.fr</td><td>Vernouillet</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>ALVES Maria</td><td>m.alves@afec.fr</td><td>Afec à distance</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>BERNARD Jean</td><td>j.bernard@afec.fr</td><td>Agen</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>DURAND Sophie</td><td>s.durand@afec.fr</td><td>Amiens</td><td>12 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>PETIT Lucas</td><td>l.petit@afec.fr</td><td>Angoulême</td><td>1 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>MOREAU Emma</td><td>e.moreau@afec.fr</td><td>Bayonne</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>LEFEBVRE Thomas</td><td>t.lefebvre@afec.fr</td><td>Beauvais</td><td>10 ANS</td><td>WINDOWS 10 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>ROUX Julie</td><td>j.roux@afec.fr</td><td>Bordeaux</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>GARCIA Antoine</td><td>a.garcia@afec.fr</td><td>Cergy</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>BERTRAND Chloe</td><td>c.bertrand@afec.fr</td><td>Châlons-en-Champagne</td><td>7 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>FOURNIER Hugo</td><td>h.fournier@afec.fr</td><td>Chartres</td><td>15 ANS</td><td>WINDOWS 7</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>GIRARD Manon</td><td>m.girard@afec.fr</td><td>Corbeil-Essonnes</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>ANDRE Paul</td><td>p.andre@afec.fr</td><td>Créteil</td><td>3 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>MULLER Clara</td><td>c.muller@afec.fr</td><td>Dax</td><td>1 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>LEFEVRE Pierre</td><td>p.lefevre@afec.fr</td><td>Ecole Jeanne Blum</td><td>9 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>MERCIER Sarah</td><td>s.mercier@afec.fr</td><td>La Rochelle</td><td>11 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>BONNET Nicolas</td><td>n.bonnet@afec.fr</td><td>Lille</td><td>2 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>VINCENT Lea</td><td>l.vincent@afec.fr</td><td>Lyon</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>LAMBERT Tom</td><td>t.lambert@afec.fr</td><td>Maisons-Laffitte</td><td>0 AN</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>MASSON Ines</td><td>i.masson@afec.fr</td><td>Montargis</td><td>6 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>MATHIEU Leo</td><td>l.mathieu@afec.fr</td><td>Nanterre</td><td>13 ANS</td><td>WINDOWS 10 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>GUERIN Camille</td><td>c.guerin@afec.fr</td><td>Orléans Centre</td><td>4 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>BOYER Maxime</td><td>m.boyer@afec.fr</td><td>Pantin</td><td>8 ANS</td><td>WINDOWS 11 PRO</td></tr>
+                        <tr class="row-yellow"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>PHILIPPE Zoe</td><td>z.philippe@afec.fr</td><td>Pau</td><td>10 ANS</td><td>WINDOWS 10 HOME</td></tr>
+                        <tr class="row-red"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>LECLERC Jules</td><td>j.leclerc@afec.fr</td><td>Pithiviers</td><td>2 ANS</td><td>NON OBTENUE</td></tr>
+                        <tr class="row-green"><td><span class="dot"></span></td><td><button class="btn-action" onclick="alert('Mail prêt')">✉️</button></td><td>GUTIERREZ Ana</td><td>a.gutierrez@afec.fr</td><td>Vernouillet</td><td>5 ANS</td><td>WINDOWS 11 PRO</td></tr>
                     </tbody>
                 </table>
             </div>

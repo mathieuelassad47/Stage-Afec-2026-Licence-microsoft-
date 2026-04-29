@@ -1,4 +1,9 @@
 /* ==========================================================
+   VARIABLES DE STOCK (RECYCLAGE)
+   ========================================================== */
+let stockRecyclage = ["AFEC-W11-9999", "AFEC-W11-8888", "AFEC-W11-7777"];
+
+/* ==========================================================
    1. AUTHENTIFICATION (ADMIN DIRECT + LIAISON MYSQL)
    ========================================================== */
 
@@ -55,7 +60,6 @@ function lancerAnimationConnexion(email) {
             verifierEcheanceClient();
         }, 2000);
     } else {
-        // Fallback si l'écran de chargement n'existe pas dans ton HTML
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         chargerUtilisateurs();
@@ -78,24 +82,43 @@ function afficherErreurLogin(msg) {
 }
 
 /* ==========================================================
-   2. LOGIQUE DU DASHBOARD, SUPPRESSION & AJOUT
+   2. LOGIQUE DU DASHBOARD & STATS
    ========================================================== */
 
 let mailEnCours = ""; 
 
-// A. SYSTÈME DE SUPPRESSION (RECYCLAGE)
-function confirmerSuppression(nomEmploye, userId) {
-    const confirmation = confirm(`❗ ATTENTION : Voulez-vous vraiment recycler (supprimer) ${nomEmploye} de la base AFEC ?\nCette action est irréversible.`);
+function majChiffresCles() {
+    const lignes = document.querySelectorAll('#corps-tableau-rh tr');
+    const green = document.querySelectorAll('.row-green').length;
+    const red = document.querySelectorAll('.row-red').length;
+    
+    const totalEl = document.getElementById('total-licences');
+    const greenEl = document.getElementById('count-green');
+    const redEl = document.getElementById('count-red');
+
+    if(totalEl) totalEl.innerText = lignes.length;
+    if(greenEl) greenEl.innerText = green;
+    if(redEl) redEl.innerText = red;
+}
+
+function confirmerSuppression(nomEmploye, licenceEmploye) {
+    const confirmation = confirm(`❗ ATTENTION : Voulez-vous vraiment recycler la licence de ${nomEmploye} ?\nCette action est irréversible.`);
     
     if (confirmation) {
-        console.log(`🗑️ Suppression de l'ID ${userId} (${nomEmploye}) demandée.`);
+        // RÉCUPÉRATION DE LA LICENCE DANS LE STOCK
+        if(licenceEmploye && licenceEmploye !== "NON OBTENUE" && licenceEmploye !== "undefined") {
+            stockRecyclage.push(licenceEmploye);
+            console.log(`♻️ Stock mis à jour : ${licenceEmploye} ajouté.`);
+            alert(`La licence ${licenceEmploye} a été remise dans le stock de recyclage.`);
+        }
+        
         alert(`♻️ Recyclage réussi : ${nomEmploye} a été retiré du système.`);
-        // Note: On pourrait ici appeler une route DELETE
+        // Simuler la suppression visuelle
         chargerUtilisateurs(); 
+        majChiffresCles();
     }
 }
 
-// B. SYSTÈME D'ENVOI DE MAIL (POPUP)
 function ouvrirBoiteMail(email, nom) {
     mailEnCours = email; 
     const popup = document.getElementById('popup-message');
@@ -112,23 +135,36 @@ function envoyerMessage() {
     document.getElementById('popup-message').style.display = 'none';
 }
 
-// C. AJOUT MANUEL D'UN UTILISATEUR
+/* ==========================================================
+   3. AJOUT ET CHARGEMENT (GESTION RECYCLAGE DIRECT)
+   ========================================================== */
+
 function ajouterUtilisateur() {
     const nom = document.getElementById('new-nom').value;
     const email = document.getElementById('new-email').value;
     const ville = document.getElementById('new-ville').value;
-    const statut = document.getElementById('new-statut').value; // 'Green', 'Yellow' ou 'Red'
+    const statut = document.getElementById('new-statut').value;
 
     if(nom === "" || email === "") {
-        alert("Merci de remplir au moins le nom et l'email");
+        alert("Veuillez remplir au moins le nom et l'email");
         return;
     }
 
-    const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
-    if (!tableBody) return;
+    let licenceAttribuee = "";
 
-    // Calcul visuel identique au chargement principal
+    // LOGIQUE DE RECYCLAGE DIRECT
+    if (stockRecyclage.length > 0) {
+        licenceAttribuee = stockRecyclage.shift(); 
+        console.log(`♻️ Recyclage : Licence ${licenceAttribuee} réattribuée.`);
+    } else {
+        const randomId = Math.floor(1000 + Math.random() * 9000);
+        licenceAttribuee = `AFEC-NEW-${randomId}`;
+        console.log(`✨ Nouvelle licence générée : ${licenceAttribuee}`);
+    }
+
+    const tableBody = document.getElementById('corps-tableau-rh');
     const couleurBarre = statut === "Red" ? "#ff3b30" : (statut === "Yellow" ? "#ff9500" : "#34c759");
+    
     const row = document.createElement('tr');
     row.className = `row-${statut.toLowerCase()}`; 
 
@@ -136,7 +172,7 @@ function ajouterUtilisateur() {
         <td><span class="dot" style="background:${couleurBarre}"></span></td>
         <td>
             <button onclick="ouvrirBoiteMail('${email}', '${nom}')" class="btn-action">✉️ Alerter</button>
-            <button onclick="confirmerSuppression('${nom}', 'new')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
+            <button onclick="confirmerSuppression('${nom}', '${licenceAttribuee}')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
         </td>
         <td><strong>${nom}</strong></td>
         <td>${email}</td>
@@ -147,27 +183,21 @@ function ajouterUtilisateur() {
             </div>
             <span class="time-label" style="font-size:10px;">5 AN(S) RESTANT(S)</span>
         </td>
-        <td>WINDOWS 11 PRO</td>
+        <td>${licenceAttribuee}</td>
     `;
     
-    // On ajoute en haut de la liste
     tableBody.insertBefore(row, tableBody.firstChild);
     
-    // Nettoyage des champs
     document.getElementById('new-nom').value = "";
     document.getElementById('new-email').value = "";
     document.getElementById('new-ville').value = "";
     
-    updateStats();
-    alert(nom + " a été ajouté avec succès au dashboard !");
+    majChiffresCles();
+    alert(`Succès ! Licence utilisée : ${licenceAttribuee} (${stockRecyclage.length} restantes en stock)`);
 }
 
-/* ==========================================================
-   3. CHARGEMENT ET RENDER DU TABLEAU (FETCH JSON)
-   ========================================================== */
-
 async function chargerUtilisateurs() {
-    const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
+    const tableBody = document.getElementById('corps-tableau-rh');
     if (!tableBody) return;
 
     try {
@@ -191,7 +221,7 @@ async function chargerUtilisateurs() {
                 <td><span class="dot" style="background:${couleurBarre}"></span></td>
                 <td>
                     <button onclick="ouvrirBoiteMail('${user.email}', '${user.nom}')" class="btn-action">✉️ Alerter</button>
-                    <button onclick="confirmerSuppression('${user.nom}', '${user.id}')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
+                    <button onclick="confirmerSuppression('${user.nom}', '${user.licence}')" class="btn-action btn-delete" style="background:#ff3b30; color:white; border:none; padding:5px; border-radius:5px; margin-left:5px;">🗑️ Recycler</button>
                 </td>
                 <td>${user.nom}</td>
                 <td>${user.email}</td>
@@ -206,14 +236,16 @@ async function chargerUtilisateurs() {
             `;
             tableBody.appendChild(row);
         });
-        updateStats();
+        
+        majChiffresCles();
+        
     } catch (error) {
         console.error("Erreur de chargement :", error);
     }
 }
 
 /* ==========================================================
-   4. NOTIFICATIONS ET TRI
+   4. NOTIFICATIONS ET FONCTIONS COMPLÉMENTAIRES
    ========================================================== */
 
 function verifierEcheanceClient() {
@@ -230,36 +262,5 @@ function verifierEcheanceClient() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const sortSelect = document.getElementById('sort-select');
-    
-    window.updateStats = () => {
-        const countGreen = document.querySelectorAll('.row-green').length;
-        const countYellow = document.querySelectorAll('.row-yellow').length;
-        const countRed = document.querySelectorAll('.row-red').length;
-
-        if(document.getElementById('count-green')) document.getElementById('count-green').innerText = countGreen;
-        if(document.getElementById('count-yellow')) document.getElementById('count-yellow').innerText = countYellow;
-        if(document.getElementById('count-red')) document.getElementById('count-red').innerText = countRed;
-    };
-
-    function executerTri(critere) {
-        const tableBody = document.getElementById('user-table-body') || document.getElementById('corps-tableau-rh');
-        const rows = Array.from(tableBody.querySelectorAll('tr'));
-        
-        rows.sort((a, b) => {
-            let aCol, bCol;
-            switch(critere) {
-                case 'nom': aCol = a.cells[2]; bCol = b.cells[2]; break;
-                case 'ville': aCol = a.cells[4]; bCol = b.cells[4]; break;
-                case 'anciennete': aCol = a.cells[5]; bCol = b.cells[5]; break;
-                default: return 0;
-            }
-            return aCol.innerText.toLowerCase().localeCompare(bCol.innerText.toLowerCase());
-        });
-
-        tableBody.innerHTML = "";
-        rows.forEach(row => tableBody.appendChild(row));
-    }
-
-    if(sortSelect) sortSelect.addEventListener('change', (e) => executerTri(e.target.value));
+    // Initialisation éventuelle
 });
